@@ -1,0 +1,21 @@
+﻿entername.maxChars = 30;
+if(_root.game.hero.character_name == null || _root.game.hero.character_name == undefined)
+{
+   _root.game.hero.character_name = _global.oldname;
+}
+statpoints = _root.game.hero.statpoints;
+strength = _root.game.hero.strength;
+speed = _root.game.hero.speed;
+attack = _root.game.hero.attack;
+defence = _root.game.hero.defence;
+vitality = _root.game.hero.vitality;
+charisma = _root.game.hero.charisma;
+stamina = _root.game.hero.stamina;
+magicka = _root.game.hero.magicka;
+hero._xscale = 100 + _root.game.hero.strength / 2;
+hero._yscale = 100 + _root.game.hero.strength / 2;
+if(strength == 1 && speed == 1 && attack == 1 && defence == 1 && vitality == 1 && charisma == 1 && stamina == 1 && magicka == 1 && statpoints == 0)
+{
+   statpoints = 9;
+   _root.game.hero.statpoints = 9;
+}

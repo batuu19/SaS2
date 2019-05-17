@@ -1,0 +1,167 @@
+﻿_root.delete_tooltips();
+function enchant_weapon(enchant_type, enchant_potency)
+{
+   itemnumber = _root.game.hero.weapon;
+   goldpieces = _root.game.hero.goldpieces;
+   displayitem.setMask(enchantmask);
+   displayweapon = displayitem.attachMovie("weapon" + itemnumber,"weapon" + itemnumber,500);
+   displayweapon._xscale = displayweapon._yscale = 250;
+   displayweapon._rotation = 90;
+   displayweapon._y = 160;
+   displayweapon._x = -20;
+   if(equipped == 1)
+   {
+      weapon_txt = _root.game.hero.weapon_name + " (" + _root.game.hero.weapon_min_damage + "-" + _root.game.hero.weapon_max_damage + ")";
+      enchant_damage = Math.ceil(_root.game.hero.weapon_max_damage / 3 * enchant_potency);
+      itemname = _root["weapon" + itemnumber][1];
+      itemdamage = itemtype + " " + _root["weapon" + itemnumber][3] + " - " + _root["weapon" + itemnumber][4] + " damage.";
+   }
+   else
+   {
+      weapon_txt = _root.game.hero.secondary_weapon_name + " (" + _root.game.hero.secondary_weapon_min_damage + "-" + _root.game.hero.secondary_weapon_max_damage + ")";
+      enchant_damage = Math.ceil(_root.game.hero.secondary_weapon_max_damage / 3 * enchant_potency);
+      itemname = _root["weapon" + itemnumber][1];
+      itemdamage = itemtype + " " + _root["weapon" + itemnumber][3] + " - " + _root["weapon" + itemnumber][4] + " damage.";
+   }
+   enchant_txt = _root.weaponenchantments_potency[enchant_potency] + " enchant (adds " + enchant_damage + " " + _root.weaponenchantments[enchant_type] + " damage)";
+   displayweapon.blendMode = "overlay";
+   if(_root.game.hero.weapon > 1 || _root.game.hero.secondary_weapon != 0)
+   {
+      itemcost = Math.ceil(enchant_damage * enchant_damage * 25);
+      if(itemcost < 1)
+      {
+         itemcost = 1;
+      }
+      bubbletext = "Do you wish to enchant this weapon?";
+      enchant_cost = "Item cost: " + itemcost + " gold";
+   }
+   else
+   {
+      bubbletext = "I refuse to enchant that! Find me a decent weapon! ";
+      itemcost = 0;
+      enchant_cost = "Item cost: 0 gold";
+   }
+}
+function itembuttons()
+{
+   _root.delete_tooltips();
+   i = 30;
+   while(i <= 90)
+   {
+      weap_i = i;
+      itemnumber = Number(weap_i);
+      this["item" + i].itemlevel = _root["inventory" + itemnumber][3];
+      if(_root.game.hero.magicka < this["item" + i].itemlevel)
+      {
+         this["item" + i]._alpha = 90;
+         this["item" + i].blendMode = "invert";
+      }
+      this["item" + i].onRollOver = function()
+      {
+         getiteminfo(this);
+      };
+      this["item" + i].onRelease = function()
+      {
+         _root.clicksound.start();
+         if(this.itemlevel <= _root.game.hero.magicka)
+         {
+            buyitem(this);
+         }
+         else
+         {
+            bubbletext = "Your Magicka is too low to buy this spell! Come back when your Magicka is at least " + this.itemlevel + ".";
+         }
+      };
+      i++;
+   }
+}
+function getiteminfo(whichitem)
+{
+   itemnumber = whichitem._name.charAt(4) + whichitem._name.charAt(5);
+   itemnumber = Number(itemnumber);
+   itemtype = _root["inventory" + itemnumber][0];
+   itemcharges = _root["inventory" + itemnumber][2];
+   itemcost = Math.round(_root["inventory" + itemnumber][3] * (_root["inventory" + itemnumber][3] / 2) * 500);
+   itemcostbefore = itemcost;
+   char_discount = Math.round(itemcost * _root.game.hero.charisma / 200);
+   itemcost = itemcost - char_discount;
+   if(itemcost < 1)
+   {
+      itemcost = 1;
+   }
+   reqlevel = "Required magicka of " + whichitem.itemlevel;
+   if(whichitem.itemlevel > _root.game.hero.magicka)
+   {
+      bubbletext = _root["inventory" + itemnumber][1] + ". " + "\n" + reqlevel + "\n" + "\n" + "Your magicka is not high enough to use this spell.";
+   }
+   else
+   {
+      bubbletext = _root["inventory" + itemnumber][1] + ". " + "\n" + _root["inventory" + itemnumber][4] + "\n" + "It costs " + itemcost + " gold.";
+   }
+}
+function buyitem(whichitem)
+{
+   goldpieces = _root.game.hero.goldpieces;
+   gotoAndStop("getitem");
+   play();
+   display_inventory.gotoAndStop(itemnumber);
+   itemname = _root["inventory" + itemnumber][1];
+   itemtype = _root["inventory" + itemnumber][0];
+   itemdesc = _root["inventory" + itemnumber][4] + ".";
+   bubbletext = "Fill up your inventory slots with this spell by clicking them. Click the X when done.";
+   itemcostbefore_txt = "Original spell cost: " + itemcostbefore + " gold";
+   char_discount_txt = "Charisma discount: " + char_discount + " gold";
+   itemcosttxt = "Final spell cost: " + itemcost + " gold";
+}
+function swap_weapons()
+{
+   equipped = 1;
+   if(_root.game.hero.ammo_left <= 0 && _root.game.hero.secondary_weapon != 0 || _root.game.hero.secondary_weapon == 0)
+   {
+      swap_inventory._visible = false;
+   }
+   else if(_root.game.hero.equipped_weapon == 1)
+   {
+      swap_inventory.gotoAndStop(11);
+   }
+   else
+   {
+      swap_inventory.gotoAndStop(10);
+   }
+   swap_inventory.onRollOver = function()
+   {
+      bubbletext = "You can select either your ranged or your melee weapon to enchant.";
+      this.battlebutton.gotoAndStop(2);
+      if(this.tooltip != undefined)
+      {
+         _root.tooltips("You can select either your ranged or your melee weapon to enchant.");
+      }
+   };
+   swap_inventory.onRollOut = function()
+   {
+      bubbletext = initbubbletext;
+      this.battlebutton.gotoAndStop(1);
+      _root.delete_tooltips();
+   };
+   swap_inventory.onRelease = function()
+   {
+      this.battlebutton.gotoAndStop(1);
+      _root.delete_tooltips();
+      if(equipped == 1)
+      {
+         equipped = 2;
+         swap_inventory.gotoAndStop(10);
+      }
+      else
+      {
+         equipped = 1;
+         swap_inventory.gotoAndStop(11);
+      }
+      enchant_weapon(enchant_type,enchant_potency);
+   };
+}
+if(_global.gamephase < 5)
+{
+   _root.tooltips("In the last year, a magic shop has been set up in the arena. You can enchant your weapons here or purchase powerful spells to take into combat with you.",1000,400,90);
+}
+shopkeeper.gotoAndPlay("normal");

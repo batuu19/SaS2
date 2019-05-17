@@ -62,5 +62,17 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Sources\Bosses.txt" />
+    <Content Include="Sources\ConstructCharacter.txt" />
+    <Content Include="Sources\DayText.txt" />
+    <Content Include="Sources\DefineSprite Describtions.txt" />
+    <Content Include="Sources\Enchanting.txt" />
+    <Content Include="Sources\EQSource.txt" />
+    <Content Include="Sources\Frame102.txt" />
+    <Content Include="Sources\HeroInit.txt" />
+    <Content Include="Sources\RandomiseGladiator.txt" />
+    <Content Include="Sources\SoundsAndTooltips.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

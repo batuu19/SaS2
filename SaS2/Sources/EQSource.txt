@@ -1,0 +1,359 @@
+﻿function backup_char(whichcharacter)
+{
+   whichcharacter.backup_strength = whichcharacter.strength;
+   whichcharacter.backup_speed = whichcharacter.speed;
+   whichcharacter.backup_attack = whichcharacter.attack;
+   whichcharacter.backup_defence = whichcharacter.defence;
+   whichcharacter.backup_vitality = whichcharacter.vitality;
+   whichcharacter.backup_charisma = whichcharacter.charisma;
+   whichcharacter.backup_stamina = whichcharacter.stamina;
+   whichcharacter.backup_magicka = whichcharacter.magicka;
+   whichcharacter.backup_shoulderguard = whichcharacter.shoulderguard;
+   whichcharacter.backup_gauntlet = whichcharacter.gauntlet;
+   whichcharacter.backup_breastplate = whichcharacter.breastplate;
+   whichcharacter.backup_helmet = whichcharacter.helmet;
+   whichcharacter.backup_greaves = whichcharacter.greaves;
+   whichcharacter.backup_shinguard = whichcharacter.shinguard;
+   whichcharacter.backup_boot = whichcharacter.boot;
+   whichcharacter.backup_weapon = whichcharacter.weapon;
+   whichcharacter.backup_secondary_weapon = whichcharacter.secondary_weapon;
+   whichcharacter.backup_shield = whichcharacter.shield;
+   whichcharacter.backup_inventory1 = whichcharacter.inventory1;
+   whichcharacter.backup_inventory2 = whichcharacter.inventory2;
+   whichcharacter.backup_inventory3 = whichcharacter.inventory3;
+   whichcharacter.backup_inventory4 = whichcharacter.inventory4;
+   whichcharacter.backup_inventory5 = whichcharacter.inventory5;
+   whichcharacter.backup_inventory6 = whichcharacter.inventory6;
+   whichcharacter.backup_inventory_maxslots = whichcharacter.inventory_maxslots;
+   _root.constructDNA();
+}
+function restore_char(whichcharacter)
+{
+   whichcharacter.strength = whichcharacter.backup_strength;
+   whichcharacter.speed = whichcharacter.backup_speed;
+   whichcharacter.attack = whichcharacter.backup_attack;
+   whichcharacter.defence = whichcharacter.backup_defence;
+   whichcharacter.vitality = whichcharacter.backup_vitality;
+   whichcharacter.charisma = whichcharacter.backup_charisma;
+   whichcharacter.stamina = whichcharacter.backup_stamina;
+   whichcharacter.magicka = whichcharacter.backup_magicka;
+   whichcharacter.shoulderguard = whichcharacter.backup_shoulderguard;
+   whichcharacter.gauntlet = whichcharacter.backup_gauntlet;
+   whichcharacter.breastplate = whichcharacter.backup_breastplate;
+   whichcharacter.helmet = whichcharacter.backup_helmet;
+   whichcharacter.greaves = whichcharacter.backup_greaves;
+   whichcharacter.shinguard = whichcharacter.backup_shinguard;
+   whichcharacter.boot = whichcharacter.backup_boot;
+   whichcharacter.weapon = whichcharacter.backup_weapon;
+   whichcharacter.secondary_weapon = whichcharacter.backup_secondary_weapon;
+   whichcharacter.ammo_left = whichcharacter.maximum_ammo;
+   whichcharacter.shield = whichcharacter.backup_shield;
+   whichcharacter.inventory1 = whichcharacter.backup_inventory1;
+   whichcharacter.inventory2 = whichcharacter.backup_inventory2;
+   whichcharacter.inventory3 = whichcharacter.backup_inventory3;
+   whichcharacter.inventory4 = whichcharacter.backup_inventory4;
+   whichcharacter.inventory5 = whichcharacter.backup_inventory5;
+   whichcharacter.inventory6 = whichcharacter.backup_inventory6;
+   whichcharacter.inventory_maxslots = whichcharacter.backup_inventory_maxslots;
+   _root.constructDNA();
+}
+function battlevalues(whichcharacter)
+{
+   _global.breastplate_dval = 16;
+   _global.helmet_dval = 10;
+   _global.shinguard_dval = 6;
+   _global.greaves_dval = 3;
+   _global.shoulderguard_dval = 8;
+   _global.gauntlet_dval = 5;
+   _global.boot_dval = 2;
+   _global.shield_dval = 12;
+   whichcharacter.physical_size = 80 + Math.round(whichcharacter.strength / 1.5);
+   whichcharacter.weapon_type = _root["weapon" + whichcharacter.weapon][0];
+   whichcharacter.weapon_name = _root["weapon" + whichcharacter.weapon][1];
+   whichcharacter.weapon_typename = _root.weapontypes[whichcharacter.weapon_type];
+   whichcharacter.weapon_weight = _root["weapon" + whichcharacter.weapon][2];
+   whichcharacter.weapon_range = whichcharacter.physical_size + _root["weapon" + whichcharacter.weapon][5] * 44;
+   whichcharacter.weapon_min_damage = _root["weapon" + whichcharacter.weapon][3];
+   whichcharacter.weapon_max_damage = _root["weapon" + whichcharacter.weapon][4];
+   whichcharacter.weapon_enchantment_type_name = _root.weaponenchantments[whichcharacter.weapon_enchantment_type];
+   whichcharacter.weapon_enchantment_damage = Math.ceil(whichcharacter.weapon_max_damage / 3 * whichcharacter.weapon_enchantment_potency);
+   whichcharacter.secondary_weapon_type = _root["weapon" + whichcharacter.secondary_weapon][0];
+   whichcharacter.secondary_weapon_name = _root["weapon" + whichcharacter.secondary_weapon][1];
+   whichcharacter.secondary_weapon_typename = _root.weapontypes[whichcharacter.secondary_weapon_type];
+   whichcharacter.secondary_weapon_weight = _root["weapon" + whichcharacter.secondary_weapon][2];
+   whichcharacter.secondary_weapon_range = whichcharacter.physical_size + _root["weapon" + whichcharacter.secondary_weapon][5] * 44;
+   whichcharacter.secondary_weapon_min_damage = _root["weapon" + whichcharacter.secondary_weapon][3];
+   whichcharacter.secondary_weapon_max_damage = _root["weapon" + whichcharacter.secondary_weapon][4];
+   whichcharacter.secondary_weapon_enchantment_type_name = _root.weaponenchantments[whichcharacter.secondary_weapon_enchantment_type];
+   whichcharacter.secondary_weapon_enchantment_damage = Math.ceil(whichcharacter.secondary_weapon_max_damage / 3 * whichcharacter.secondary_weapon_enchantment_potency);
+   whichcharacter.min_damage = Math.round(whichcharacter.strength * 2) + whichcharacter.weapon_min_damage;
+   whichcharacter.max_damage = Math.round(whichcharacter.strength * 2) + whichcharacter.weapon_max_damage;
+   whichcharacter.secondary_min_damage = Math.round(whichcharacter.strength * 1) + whichcharacter.secondary_weapon_min_damage;
+   whichcharacter.secondary_max_damage = Math.round(whichcharacter.strength * 1) + whichcharacter.secondary_weapon_max_damage;
+   if(whichcharacter.equipped_weapon == 2)
+   {
+      whichcharacter.min_damage = whichcharacter.secondary_min_damage;
+      whichcharacter.max_damage = whichcharacter.secondary_max_damage;
+      whichcharacter.weapon_range = whichcharacter.secondary_weapon_range;
+   }
+   whichcharacter.attack_type = whichcharacter.whichweapon[0];
+   whichcharacter.attack_speed = whichcharacter.whichweapon[2];
+   whichcharacter.breastplate_defence = Math.round(whichcharacter.breastplate * _global.breastplate_dval);
+   if(whichcharacter.helmet <= 25)
+   {
+      whichcharacter.helmet_defence = Math.round(whichcharacter.helmet * _global.helmet_dval);
+   }
+   else
+   {
+      whichcharacter.helmet_defence = Math.round(whichcharacter.herolevel * 0.5 * _global.helmet_dval);
+   }
+   whichcharacter.shinguard_defence = Math.round(whichcharacter.shinguard * _global.shinguard_dval);
+   whichcharacter.greaves_defence = Math.round(whichcharacter.greaves * _global.greaves_dval);
+   whichcharacter.shoulderguard_defence = Math.round(whichcharacter.shoulderguard * _global.shoulderguard_dval);
+   whichcharacter.gauntlet_defence = Math.round(whichcharacter.gauntlet * _global.gauntlet_dval);
+   whichcharacter.boot_defence = Math.round(whichcharacter.boot * _global.boot_dval);
+   if(whichcharacter.equipped_weapon == 1)
+   {
+      whichcharacter.shield_defence = Math.round(whichcharacter.shield * _global.shield_dval);
+   }
+   else
+   {
+      whichcharacter.shield_defence = 0;
+   }
+   if(whichcharacter.herolevel < 9)
+   {
+      whichcharacter.maximum_ammo = 5;
+   }
+   else if(whichcharacter.herolevel >= 9 && whichcharacter.herolevel < 23)
+   {
+      whichcharacter.maximum_ammo = 10;
+   }
+   else if(whichcharacter.herolevel >= 23 && whichcharacter.herolevel < 28)
+   {
+      whichcharacter.maximum_ammo = 15;
+   }
+   else if(whichcharacter.herolevel >= 28 && whichcharacter.herolevel < 35)
+   {
+      whichcharacter.maximum_ammo = 20;
+   }
+   else if(whichcharacter.herolevel >= 35 && whichcharacter.herolevel < 45)
+   {
+      whichcharacter.maximum_ammo = 25;
+   }
+   else if(whichcharacter.herolevel >= 35)
+   {
+      whichcharacter.maximum_ammo = 30;
+   }
+   whichcharacter.hitpointsmax = whichcharacter.herolevel * 10 + whichcharacter.vitality * 20;
+   whichcharacter.staminamax = 100 + whichcharacter.stamina * 10;
+   whichcharacter.movement_speed = Math.round(whichcharacter.speed * 1.5);
+   if(whichcharacter.movement_speed < 4)
+   {
+      whichcharacter.movement_speed = 4;
+   }
+   if(whichcharacter.movement_speed > 60)
+   {
+      whichcharacter.movement_speed = 60;
+   }
+   _root.game.hero.experiencelast = Number(Math.round((_root.game.hero.herolevel - 1) * (_root.game.hero.herolevel - 1) * ((_root.game.hero.herolevel - 1) / 5) * 300));
+   _root.game.hero.experienceneeded = Number(Math.round(_root.game.hero.herolevel * _root.game.hero.herolevel * (_root.game.hero.herolevel / 5) * 300));
+   if(_root.game.hero.experience < experiencelast)
+   {
+      _root.game.hero.experience = _root.game.hero.experience;
+   }
+   if(_root.game.hero.experienceneeded < 125)
+   {
+      _root.game.hero.experienceneeded = 125;
+   }
+   whichcharacter.charheight = 60 + Math.round(whichcharacter.strength * 0.9);
+   whichcharacter.charfeet = Math.floor(whichcharacter.charheight / 12);
+   whichcharacter.charinches = Math.round(whichcharacter.charheight / 12);
+   whichcharacter.charheight = whichcharacter.charfeet + "\'" + whichcharacter.charinches;
+   whichcharacter.charweight = 110 + Math.round(whichcharacter.strength * 7);
+   if(_global.battle_started != true)
+   {
+      whichcharacter.hitpoints = Math.round(whichcharacter.hitpointsmax);
+      whichcharacter.armourclass_max = whichcharacter.breastplate_defence + whichcharacter.helmet_defence + whichcharacter.shinguard_defence + whichcharacter.greaves_defence + whichcharacter.shoulderguard_defence + whichcharacter.gauntlet_defence + whichcharacter.boot_defence + whichcharacter.shield_defence;
+      whichcharacter.armourclass = whichcharacter.armourclass_max;
+      if(whichcharacter.staminaleft <= 0)
+      {
+         whichcharacter.staminaleft = whichcharacter.staminamax;
+      }
+      if(whichcharacter.ammo_left <= 0 || whichcharacter.ammo_left == undefined)
+      {
+         whichcharacter.ammo_left = whichcharacter.maximum_ammo;
+      }
+      whichcharacter.character_xp = whichcharacter.secondary_min_damage + whichcharacter.secondary_max_damage * 10 + whichcharacter.min_damage + whichcharacter.max_damage * 20 + whichcharacter.weapon_enchantment_damage * 10 + whichcharacter.secondary_weapon_enchantment_damage * 10 + whichcharacter.herolevel * whichcharacter.herolevel + whichcharacter.armourclass * 10 + 150;
+   }
+   whichcharacter.hitpointsdisplay = whichcharacter.hitpoints + " / " + whichcharacter.hitpointsmax;
+}
+armour_table = new Object();
+with(armour_table)
+{
+   armourweights = new Array("","Light","Medium","Heavy")
+   armourconditions = new Array("","Broken","Badly Damaged","Damaged","Slightly Damaged ","Perfect")
+   armourtypes = new Array("","boot","shinguard","greaves","breastplate","gauntlet","shoulderguard","helmet","shield")
+   armoursets = new Array("None","None","Peasant","Cutpurse","Brigand","Militia","Veteran","Hoplite","Swashbuckler","Retarius","Myrmidon","Legion","Warlord","Centurion","Knight","Paladin","Templar","Cavalier","Crusader","Avenger","Infernal","Samurai","Demon-plate","Conquerer","Automaton","Champions","Emperors")
+   armoursetweights = new Array(1,1,1,2,3,1,2,2,3,1,1,2,2,3,1,2,3,2,3,1,3,2,2,3,1,2,3)
+   
+};
+weapons_table = new Object();
+with(weapons_table)
+{
+   weapontypes = new Array("","slashing","bashing","hacking","ranged")
+   weaponenchantments_potency = new Array("","Weak","Medium","Strong")
+   weaponenchantments = new Array("","","Flame","Frost","Poison","Wraith")
+   weaponweights = new Array("","Very heavy","Heavy","Normal","Light","Very light")
+   weapon0 = new Array(2,"Rusty knife",5,1,3,1)
+   weapon1 = new Array(1,"Dagger",5,3,9,1)
+   weapon2 = new Array(1,"Shortsword",5,4,16,1)
+   weapon3 = new Array(1,"Dirk",5,5,25,1)
+   weapon4 = new Array(1,"Gladius",4,6,36,1)
+   weapon5 = new Array(1,"Broadsword",3,7,49,2)
+   weapon6 = new Array(1,"Claymore",3,8,64,2)
+   weapon7 = new Array(1,"Bastard Sword",3,9,81,2)
+   weapon8 = new Array(1,"Longsword",3,10,100,2)
+   weapon9 = new Array(1,"Knight Sword",3,12,144,2)
+   weapon10 = new Array(1,"Silver Longsword",3,14,196,2)
+   weapon11 = new Array(1,"Heartblade",3,16,256,2)
+   weapon12 = new Array(1,"Crystal Sword",3,18,324,2)
+   weapon13 = new Array(1,"Rapier",4,19,361,2)
+   weapon14 = new Array(1,"Cutlas",4,20,400,2)
+   weapon15 = new Array(1,"Scimitar",1,21,441,2)
+   weapon16 = new Array(1,"Raj Scimitar",1,22,484,2)
+   weapon17 = new Array(1,"Katana",3,23,529,3)
+   weapon18 = new Array(1,"Ancestor Katana",2,24,576,3)
+   weapon19 = new Array(1,"Kensai Spirit",2,25,625,3)
+   weapon20 = new Array(1,"Daikatana",1,26,676,3)
+   weapon21 = new Array(3,"Cleaver",5,4,16,1)
+   weapon22 = new Array(3,"Hand axe",4,5,20,1)
+   weapon23 = new Array(3,"Bronze axe",4,6,24,1)
+   weapon24 = new Array(3,"Hatchet",4,8,32,1)
+   weapon25 = new Array(3,"Warrior axe",3,10,40,1)
+   weapon26 = new Array(3,"Berserker axe",3,15,60,1)
+   weapon27 = new Array(3,"Greensteel axe",3,18,72,2)
+   weapon28 = new Array(3,"Madman\'s cleaver",1,20,80,2)
+   weapon29 = new Array(3,"Greataxe",3,25,100,2)
+   weapon30 = new Array(3,"Iron greataxe",2,30,120,2)
+   weapon31 = new Array(3,"Steel battleaxe",3,35,140,2)
+   weapon32 = new Array(3,"Blacksteel battleaxe",3,40,160,2)
+   weapon33 = new Array(3,"Ogre battleaxe",3,45,180,2)
+   weapon34 = new Array(3,"Hunter spear",3,50,200,3)
+   weapon35 = new Array(3,"Ramhead sickle",1,60,240,3)
+   weapon36 = new Array(3,"Halberd",2,70,280,3)
+   weapon37 = new Array(3,"Awl Pike",2,80,320,3)
+   weapon38 = new Array(3,"Poleaxe",2,90,360,3)
+   weapon39 = new Array(3,"Pilum",1,100,400,3)
+   weapon40 = new Array(3,"Reaper scythe",1,110,440,3)
+   weapon41 = new Array(2,"Blackjack",4,4,12,1)
+   weapon42 = new Array(2,"Hammer",4,5,15,1)
+   weapon43 = new Array(2,"Knuckle Duster",5,8,24,1)
+   weapon44 = new Array(2,"Wooden club",3,10,30,1)
+   weapon45 = new Array(2,"Iron Mace",3,15,45,1)
+   weapon46 = new Array(2,"Steel Mace",3,20,60,2)
+   weapon47 = new Array(2,"Spiked Mace",2,25,75,2)
+   weapon48 = new Array(2,"Warhammer",3,30,90,2)
+   weapon49 = new Array(2,"Morning Star",3,35,105,2)
+   weapon50 = new Array(2,"Studded Mace",3,40,120,2)
+   weapon51 = new Array(2,"Maul",2,45,135,2)
+   weapon52 = new Array(2,"Spiked Maul",2,50,150,2)
+   weapon53 = new Array(2,"Sledgehammer",1,60,180,2)
+   weapon54 = new Array(2,"Claw Hammer",3,70,210,2)
+   weapon55 = new Array(2,"Heavy Mallet",1,80,250,2)
+   weapon56 = new Array(2,"Imperial Warhammer",2,90,270,3)
+   weapon57 = new Array(2,"Bonecrusher Cudgel",2,100,30,3)
+   weapon58 = new Array(2,"Quake Staff",4,120,360,3)
+   weapon59 = new Array(2,"Skull staff",3,140,420,3)
+   weapon60 = new Array(2,"Dual Maul",1,160,480,3)
+   weapon61 = new Array(4,"Children\'s Slingshot",5,4,16,100)
+   weapon62 = new Array(4,"Iron Slingshot",5,5,25,100)
+   weapon63 = new Array(4,"Oak Slingshot",5,6,36,100)
+   weapon64 = new Array(4,"Shuriken",4,7,49,100)
+   weapon65 = new Array(4,"Yew Bow",3,8,64,4)
+   weapon66 = new Array(4,"Hunter\'s Bow",3,9,81,100)
+   weapon67 = new Array(4,"Tracker\'s Bow",3,10,100,100)
+   weapon68 = new Array(4,"Oak Longbow",3,11,121,100)
+   weapon69 = new Array(4,"Steel Longbow",3,12,144,100)
+   weapon70 = new Array(4,"Reinforced Longbow",3,13,169,100)
+   weapon71 = new Array(4,"Crabclaw Bow",3,14,196,100)
+   weapon72 = new Array(4,"Batwing Bow",3,15,225,100)
+   weapon73 = new Array(4,"Kraken Bow",4,16,256,100)
+   weapon74 = new Array(4,"Wyvern Bow",4,17,289,100)
+   weapon75 = new Array(4,"Seer\'s Bow",1,18,324,4)
+   weapon76 = new Array(4,"Ironforge Warbow",1,19,361,100)
+   weapon77 = new Array(4,"Titanium Warbow",3,20,400,100)
+   weapon78 = new Array(4,"Knight Crossbow",2,21,441,100)
+   weapon79 = new Array(4,"Falcon Crossbow",2,22,484,100)
+   weapon80 = new Array(4,"Doombolt Crossbow",1,23,529,100)
+   weapon201 = new Array(1,"Shamrock",4,5,19,2)
+   weapon202 = new Array(1,"The Scurvy Blade",3,10,30,2)
+   weapon203 = new Array(2,"Axe of Persuasion",4,20,80,2)
+   weapon204 = new Array(3,"Pillar of Spheracles",3,25,100,2)
+   weapon205 = new Array(3,"Hammer of Ownage",3,25,100,3)
+   weapon206 = new Array(1,"Contemplation",3,30,110,3)
+   weapon207 = new Array(1,"The Crystal Falchion",3,40,150,3)
+   weapon210 = new Array(1,"Wicks Staff",3,30,300,3)
+   weapon220 = new Array(1,"Blade of the Empire",3,200,800,4)
+   
+};
+inventory_table = new Object();
+with(inventory_table)
+{
+   inventory0 = new Array("","Nothing",1,1,"There is nothing in this inventory slot")
+   inventory1 = new Array("","Nothing",1,1,"There is nothing in this inventory slot")
+   inventory2 = new Array("drink_potion","Small health potion",1,4,"Heals 25% of your health")
+   inventory3 = new Array("drink_potion","Medium health potion",1,8,"Heals 50% of your health")
+   inventory4 = new Array("drink_potion","Large health potion",1,16,"Heals 75% of your health")
+   inventory5 = new Array("drink_potion","Maximum health potion",1,24,"Heals all of your health")
+   inventory6 = new Array("drink_potion","Medium stamina vial",1,8,"Replentish 50% of your stamina")
+   inventory7 = new Array("drink_potion","Maximum stamina vial",1,16,"Totally replentishes your stamina")
+   inventory8 = new Array("drink_potion","Medium armour oil",1,10,"Repairs 50% of your remaining armour")
+   inventory9 = new Array("drink_potion","Maximum armour oil",1,20,"Totally repairs your remaining armour")
+   inventory30 = new Array("cast_fireball","Fireball",1,10,"A ranged fireball that does 80-160 damage to opponents")
+   inventory31 = new Array("cast_hell_fireball","Hell Fireball",1,20,"A ranged fireball that does 150-450 damage to opponents")
+   inventory32 = new Array("cast_dire_fireball","Dire Fireball",1,30,"A ranged fireball that does 300-600 damage to opponents")
+   inventory33 = new Array("cast_little_fat_kid","Little Fat Kid",1,25,"Unleash the power of the Little Fat Kid to shrink and weaken your opponent")
+   inventory34 = new Array("cast_lightning_bolt","Lightning Bolt",1,8,"Close-ranged lightning bolts leap at your opponent for 100-200 damage")
+   inventory35 = new Array("cast_frightning_bolt","Frightning Bolt",1,24,"Devastating lightning bolts that do 200-400 damage")
+   inventory36 = new Array("cast_ghost_strike","Ghost Strike",1,16,"Phase next to your opponent for a power attack, then phase back")
+   inventory37 = new Array("cast_whirlwind","Whirlwind",1,10,"A powerful whirlwind attack that requires no psyching up to cause grievous damage")
+   inventory38 = new Array("cast_gale","Gale",1,4,"A gust of wind that knocks your opponent back a great distance")
+   inventory39 = new Array("cast_command","Command",1,8,"Command your opponent move towards you and meet you in melee combat")
+   inventory40 = new Array("cast_swiftsandals","Swift Sandals",1,6,"Double your movement speed for a short time")
+   inventory41 = new Array("cast_bloodlust","Bloodlust",1,15,"Increases your strength , but reduces your agility for a short time")
+   inventory42 = new Array("cast_colossus","Colossus",1,50,"Turn into a massive colossus with huge strength and attack for a short time")
+   inventory43 = new Array("cast_rejuvinate","Rejuvinate",1,40,"Totally heals your health, replentishes your stamina and repairs your armour")
+   inventory44 = new Array("cast_weaken_armour","Weaken Armour",1,12,"Destroys up to three pieces of your opponent\'s armour")
+   inventory45 = new Array("cast_boundless_energy","Boundless Energy",1,15,"Unlimited stamina for a short time")
+   inventory46 = new Array("cast_regenerate","Regenerate",1,15,"Your health will replentish quickly each turn for a short time")
+   inventory47 = new Array("cast_adulation","Adulation",1,8,"Magically charm the crowd")
+   inventory48 = new Array("cast_teleport","Teleport",1,3,"Teleport to a random spot on the arena sands")
+   inventory49 = new Array("cast_death_from_above","Molten Death",1,60,"Unleash molten rocks from the heavens. Does 400-800 damage")
+   
+};
+tournament_table = new Object();
+with(tournament_table)
+{
+   arena_names = new Array("","Dungeon","Provincial Arena","The Ampitheatre","Grand Arena","Imperial Collesseum","Emperor\'s Palace")
+   tournament1 = new Array(4,4,2,"Woolridge\'s Meat Emporium Cup","John \'The Butcher\' Woolridge is a pillar of the community. Every year he hosts a tournament for low level gladiators to gain valuable experience. The winner even gets to take on Woolridge himself for a shot at big prizemoney.")
+   tournament2 = new Array(7,5,2,"Midsummer Blades","The Midsummer Festival is held at the height of summer and attracts travellers from all across the realms of Brandor. One of the Festival\'s highlights is the Midsummer Blades, a tournament for up and coming gladiators such as yourself.")
+   tournament3 = new Array(9,6,2,"Shardstrike Memorial","Bors Shardstrike was a great general who died fighting at the Defence of Phaetor in 1044. This tournament is held in his honour and many brave soldiers compete to hold the title of Shardstriker.")
+   tournament4 = new Array(12,7,3,"Silver Circle Invitational","The deeply pious Knights of the Silver Circle are one of the best fighting forces in all Brandor. Mostly made up of crusading lords, the order is secretive and uses the tournament to fish for possible new recruits.")
+   tournament5 = new Array(15,8,3,"Great Beast\'s Cup","The Great Beaat is spoken about in hushed whispers throughout this part of Brandor, and with good reason. He has never been defeated in combat. Each year he invites the bravest warriors to fight for the honour of facing him in single combat.")
+   tournament6 = new Array(18,9,3,"Penitent King\'s Robe","As legend has it, the Penitent King ruled as a tyrant over the land for much of his life until a kitchen serf saved him from drowning. He saw the error of his ways, and gave the peasant his royal robe, which has since become a much sought after treasure for gladiators to compete over.")
+   tournament7 = new Array(21,10,1,"Dungeon Hack","Since many gladiators were once prisoners, it seems fitting that a tournament is held in the emperor\'s dungeon every so often. It is the highlight of the year for the dungeon\'s inmates, most of whom don\'t get out very much at all.")
+   tournament8 = new Array(24,11,3,"Pillars of Spheracles","Spheracles, once beloved of the gods, was punished to forever move giant stones with a pillar with only one week of rest a year. In that week, his avatar travels to the Arena to host a tournament held in his honour.")
+   tournament9 = new Array(27,12,4,"Master\'s Court","The Master\'s Court is the first tournament to be held in the old Grand Arena, the second largest stadium in the realm. Many great gladiators have fought and died competing for this most prestigious of titles.")
+   tournament10 = new Array(30,13,4,"Gaiax\' Eye","The monstrous cyclopes Gaiax boasts that the first man to defeat him in combat will have his eye as a prize. The eye is rumoured to be worth a small fortune in gold.")
+   tournament11 = new Array(33,14,4,"Mighty Sandal","Sandals, being both comfortable and practical, are much favoured by the citizens of the realm. So much so that this tournament for veteran gladiators has even been named after the humble sandal, the realm\'s favourite footwear apparel.")
+   tournament12 = new Array(36,15,5,"Imperial Open","Gladiators who rise to such lofty heights as yours are invited to fight in the mighty Imperial Collesseum for the first time. The breathtaking collesseum is the largest arena in the realm, and only the most skilled warriors may grace its sands.")
+   tournament13 = new Array(39,16,1,"Archfiend\'s Furnace","A vile demonic presence is trapped the Emperor\'s dungeons but breaks free each year to plague the realm. Only the bravest gladiators may venture deep into the dungeons to enslave him once again.")
+   tournament14 = new Array(42,17,5,"Duel of Heroes","The Duel is the ultimate celebrity tournament in the realm. Famous warriors and legendary fighters, past and present, dazzle the crowd with some of the greatest one on one combat ever seen.")
+   tournament15 = new Array(44,18,5,"Orb of Bargle","The evil sorcerer Bargle has long terrorised the realm with his malevelont wizardry. He hosts a tournament here for his own inscrutable purposes. You have been invited to compete.")
+   tournament16 = new Array(46,19,5,"Archangel\'s Mantle","The gods keep a keen eye on the tournament and send down an archangel each year to challenge the most worthy gladiators. The archangels, avatars of the gods themselves, will challenge even the best gladiators right to the very core.")
+   tournament17 = new Array(48,20,6,"Emperor\'s Invitational","Winners of the Archangel\'s Mantle are invited to the Imperial Palace to fight in a series of tournaments overseen by the Emperor. Win your way to the top of the ladder here and confront your ultimate self.")
+   tournament18 = new Array(50,20,6,"Emperor\'s Throne","Those twenty great champions who defeat their own demons now face off in this, the ultimate tournament. Arena champions and heroes of legend will meet the Emperor in single combat. All roads have led to this, your greatest test.")
+   tournament19 = new Array(50,20,6,"Emperor\'s Throne II","Those twenty great champions who defeat their own demons now face off in this, the ultimate tournament. Arena champions and heroes of legend will meet the Emperor in single combat. All roads have led to this, your greatest test.")
+   tournament20 = new Array(50,20,6,"Emperor\'s Throne III","Those twenty great champions who defeat their own demons now face off in this, the ultimate tournament. Arena champions and heroes of legend will meet the Emperor in single combat. All roads have led to this, your greatest test.")
+   
+};

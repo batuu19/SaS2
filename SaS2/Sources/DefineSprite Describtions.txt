@@ -1,0 +1,12 @@
+﻿1264 - hero battle
+	1 - bounce item, blood
+
+1824 - dungeon intro story
+1860 - town
+1958 - armoury
+2010 - master-at-arms(weapons)
+2072 - magic shop
+2098 - potions
+2144 - duel, tournament menu
+
+2297 - fight?

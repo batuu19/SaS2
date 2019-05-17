@@ -1,0 +1,153 @@
+﻿var tempSound = new Sound();
+fscommand("getKeyboardFocus?");
+_global.gamephase = 0;
+_global.fight_mode = null;
+_global.tournament_in_progress = false;
+_global.special_for_day = false;
+_global.heroDNA = null;
+delete game;
+_global.max_characters = 0;
+function soundeffects()
+{
+   _root.createEmptyMovieClip("crowdsounds",-50001);
+   crowd_noise = new Sound(crowdsounds);
+   crowd_noise.attachSound("crowd-ambient.wav");
+   rockyou = new Sound(crowdsounds);
+   rockyou.attachSound("rockyou.wav");
+   crowd_boo = new Sound(crowdsounds);
+   crowd_boo.attachSound("boo-crowd.wav");
+   _root.createEmptyMovieClip("townsounds",-50003);
+   town_day = new Sound(townsounds);
+   town_day.attachSound("townsquare_day.wav");
+   town_night = new Sound(townsounds);
+   town_night.attachSound("townsquare_night.wav");
+   rooster = new Sound();
+   rooster.attachSound("rooster.wav");
+   victory1 = new Sound();
+   victory1.attachSound("victory1.wav");
+   victory2 = new Sound();
+   victory2.attachSound("victory2.wav");
+   victory3 = new Sound();
+   victory3.attachSound("victory3.wav");
+   coins = new Sound();
+   coins.attachSound("coins.wav");
+   levelupsong = new Sound();
+   levelupsong.attachSound("gladiator-chant.wav");
+   clicksound = new Sound();
+   clicksound.attachSound("click.wav");
+   clicksound2 = new Sound();
+   clicksound2.attachSound("click2.wav");
+}
+function tooltips(tooltip_text, tool_dur, toolx, tooly)
+{
+   if(tool_dur == null)
+   {
+      xpos = _xmouse + 100;
+      ypos = _ymouse;
+   }
+   else
+   {
+      xpos = toolx;
+      ypos = tooly;
+   }
+   if(xpos > 400)
+   {
+      xpos = 400;
+   }
+   if(ypos > 300)
+   {
+      ypos = 300;
+   }
+   if(_global.tooltips == true)
+   {
+      delete _root.tooltip_box.onEnterFrame;
+      _root.tooltip_box.tool_clock = 1;
+      _root.tooltip_box._alpha = 100;
+      tooltip_box._x = xpos + 5;
+      tooltip_box._y = ypos - 30;
+      tooltip_box.tooltip = String(tooltip_text);
+      if(tooltip_box.tooltip.length < 40)
+      {
+         tooltip_box.gotoAndStop(1);
+      }
+      else if(tooltip_box.tooltip.length >= 40 && tooltip_box.tooltip.length < 80)
+      {
+         tooltip_box.gotoAndStop(2);
+      }
+      else if(tooltip_box.tooltip.length >= 80 && tooltip_box.tooltip.length < 120)
+      {
+         tooltip_box.gotoAndStop(3);
+      }
+      else if(tooltip_box.tooltip.length >= 120 && tooltip_box.tooltip.length < 160)
+      {
+         tooltip_box.gotoAndStop(4);
+      }
+      else if(tooltip_box.tooltip.length >= 160 && tooltip_box.tooltip.length < 200)
+      {
+         tooltip_box.gotoAndStop(5);
+      }
+      else if(tooltip_box.tooltip.length >= 200 && tooltip_box.tooltip.length < 240)
+      {
+         tooltip_box.gotoAndStop(6);
+      }
+      else if(tooltip_box.tooltip.length >= 240 && tooltip_box.tooltip.length < 280)
+      {
+         tooltip_box.gotoAndStop(7);
+      }
+      else if(tooltip_box.tooltip.length >= 280 && tooltip_box.tooltip.length < 320)
+      {
+         tooltip_box.gotoAndStop(8);
+      }
+      else if(tooltip_box.tooltip.length >= 320 && tooltip_box.tooltip.length < 360)
+      {
+         tooltip_box.gotoAndStop(9);
+      }
+      tooltip_box._visible = true;
+      tooltip_box.tool_duration = tool_dur;
+      tooltip_box.onEnterFrame = function()
+      {
+         this.tool_clock++;
+         if(this.tool_clock > this.tool_duration)
+         {
+            this.tool_clock = 0;
+            this.tool_duration = 0;
+            _root.delete_tooltips();
+         }
+      };
+   }
+}
+function delete_tooltips()
+{
+   _root.tooltip_box.onEnterFrame = function()
+   {
+      this._alpha = this._alpha - 10;
+      if(this._alpha < 0)
+      {
+         _root.tooltip_box._visible = false;
+         this._alpha = 100;
+         this.tool_duration = 0;
+         delete this.onEnterFrame;
+      }
+   };
+}
+if(_level0.citizen_kane != undefined && _level0.citizen_kane != "default")
+{
+   _global.user_id = _level0.citizen_kane;
+}
+if(_global.user_id == undefined || _global.user_id == null)
+{
+   _global.user_id = 123;
+}
+_root.removeMovieClip("charsheet");
+_root.charsheet.removeMovieClip();
+if(_global.tooltips == undefined || _global.tooltips == null)
+{
+   _global.tooltips = false;
+}
+tooltip_box = _root.attachMovie("tooltips_movie","tooltips_movie",1500000);
+tooltip_box._visible = false;
+_root.gameover_screen.removeMovieClip(this);
+removeMovieClip(_root.gameover_screen);
+_root.tooltips("Welcome to Swords & Sandals. This gold box is a tooltip. It will appear throughout the game to help explain facets of the game to you, and to offer advice. You can turn off these tooltips at any time by clicking the option on the bottom panel.",1000,400,340);
+_root.soundeffects();
+var fadeFromBlack = new mx.transitions.Tween(_root.blackscreen,"_alpha",mx.transitions.easing.Regular.easeOut,100,0,1,true);

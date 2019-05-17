@@ -1,0 +1,82 @@
+﻿day_text.text1 = "Day " + _global.day;
+if(_root.game.hero.herolevel == 1)
+{
+   day_text.text1 = "Prologue";
+   day_text.text2 = "Enslaved";
+}
+if(_root.game.hero.herolevel > 1 && _root.game.hero.herolevel <= 3)
+{
+   day_text.text2 = "Glorious Freedom";
+}
+if(_root.game.hero.herolevel > 3 && _root.game.hero.herolevel <= 6)
+{
+   day_text.text2 = "Learning the Ropes";
+}
+if(_root.game.hero.herolevel > 6 && _root.game.hero.herolevel <= 9)
+{
+   day_text.text2 = "The Call of Battle";
+}
+if(_root.game.hero.herolevel > 9 && _root.game.hero.herolevel <= 12)
+{
+   day_text.text2 = "Warrior Born";
+}
+if(_root.game.hero.herolevel > 12 && _root.game.hero.herolevel <= 15)
+{
+   day_text.text2 = "The Brutal Grind";
+}
+if(_root.game.hero.herolevel > 15 && _root.game.hero.herolevel <= 18)
+{
+   day_text.text2 = "Crusades of Combat";
+}
+if(_root.game.hero.herolevel > 18 && _root.game.hero.herolevel <= 21)
+{
+   day_text.text2 = "Seeds of Vengeance";
+}
+if(_root.game.hero.herolevel > 21 && _root.game.hero.herolevel <= 24)
+{
+   day_text.text2 = "Battle Scarred";
+}
+if(_root.game.hero.herolevel > 24 && _root.game.hero.herolevel <= 27)
+{
+   day_text.text2 = "Unrelenting Carnage";
+}
+if(_root.game.hero.herolevel > 27 && _root.game.hero.herolevel <= 30)
+{
+   day_text.text2 = "Great Expectations";
+}
+if(_root.game.hero.herolevel > 30 && _root.game.hero.herolevel <= 33)
+{
+   day_text.text2 = "Hack and Slash";
+}
+if(_root.game.hero.herolevel > 30 && _root.game.hero.herolevel <= 33)
+{
+   day_text.text2 = "The Grand Stage";
+}
+if(_root.game.hero.herolevel > 33 && _root.game.hero.herolevel <= 36)
+{
+   day_text.text2 = "Beloved of the People";
+}
+if(_root.game.hero.herolevel > 36 && _root.game.hero.herolevel <= 39)
+{
+   day_text.text2 = "Furnace of Destiny";
+}
+if(_root.game.hero.herolevel > 39 && _root.game.hero.herolevel <= 42)
+{
+   day_text.text2 = "Footsteps of an Emperor";
+}
+if(_root.game.hero.herolevel > 42 && _root.game.hero.herolevel <= 45)
+{
+   day_text.text2 = "All Roads Converge";
+}
+if(_root.game.hero.herolevel > 45 && _root.game.hero.herolevel <= 48)
+{
+   day_text.text2 = "The Emperor\'s Warriors";
+}
+if(_root.game.hero.herolevel > 48 && _root.game.hero.herolevel <= 49)
+{
+   day_text.text2 = "Hour of Power";
+}
+if(_root.game.hero.herolevel >= 50)
+{
+   day_text.text2 = "Champion Eternal";
+}
