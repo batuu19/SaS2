@@ -43,6 +43,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Armour\Boot.cs" />
+    <Compile Include="Armour\Breastplate.cs" />
+    <Compile Include="Armour\Gauntlet.cs" />
+    <Compile Include="Armour\Greaves.cs" />
+    <Compile Include="Armour\Helmet.cs" />
+    <Compile Include="Armour\SecondaryWeapon.cs" />
+    <Compile Include="Armour\Shield.cs" />
+    <Compile Include="Armour\Shinguard.cs" />
+    <Compile Include="Armour\Shoulderguard.cs" />
+    <Compile Include="Armour\Weapon.cs" />
+    <Compile Include="Character.cs" />
+    <Compile Include="DNA.cs" />
+    <Compile Include="Equipment.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
