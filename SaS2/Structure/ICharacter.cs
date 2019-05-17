@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SaS2.Armour
+namespace SaS2.Structure
 {
-    public class Greaves
+    public interface ICharacter
     {
+        DNA DNA { get; set; }
+        Equipment Equipment { get; set; }
     }
 }

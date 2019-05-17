@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SaS2.Armour
+namespace SaS2.Gear.Armour
 {
-    public class Shield
+    public class Shoulderguard : AbstractArmourItem
     {
     }
 }

@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SaS2.Armour
+namespace SaS2
 {
-    public class Weapon
+    public class Hero : Character
     {
+        public int Cash { get; set; }
+        public int Experience { get; set; }
     }
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SaS2.Armour
+namespace SaS2.Gear.Weapons
 {
-    public class SecondaryWeapon
+    public class SecondaryWeapon : AbstractWeaponItem
     {
     }
 }

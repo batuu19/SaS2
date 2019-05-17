@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SaS2.Armour;
+using SaS2.Gear.Armour;
+using SaS2.Gear.Weapons;
+using SaS2.Structure;
+
 namespace SaS2
 {
     public class Equipment
@@ -18,5 +22,9 @@ namespace SaS2
         public Weapon Weapon { get; set; }
         public SecondaryWeapon SecondaryWeapon { get; set; }
         public Shield Shield { get; set; }
+
+        public List<IArmourItem> ArmourItems => new List<IArmourItem> { Shoulderguard, Gauntlet, Breastplate, Helmet, Greaves, Shinguard, Boot, Shield };
+
+        }
     }
 }

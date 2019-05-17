@@ -43,21 +43,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Armour\Boot.cs" />
-    <Compile Include="Armour\Breastplate.cs" />
-    <Compile Include="Armour\Gauntlet.cs" />
-    <Compile Include="Armour\Greaves.cs" />
-    <Compile Include="Armour\Helmet.cs" />
-    <Compile Include="Armour\SecondaryWeapon.cs" />
-    <Compile Include="Armour\Shield.cs" />
-    <Compile Include="Armour\Shinguard.cs" />
-    <Compile Include="Armour\Shoulderguard.cs" />
-    <Compile Include="Armour\Weapon.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="Gear\Armour\AbstractArmourItem.cs" />
+    <Compile Include="Gear\Armour\Types\Boot.cs" />
+    <Compile Include="Gear\Armour\Types\Breastplate.cs" />
+    <Compile Include="Gear\Armour\Types\Gauntlet.cs" />
+    <Compile Include="Gear\Armour\Types\Greaves.cs" />
+    <Compile Include="Gear\Armour\Types\Helmet.cs" />
+    <Compile Include="Hero.cs" />
+    <Compile Include="Structure\IArmourItem.cs" />
+    <Compile Include="Structure\ICharacter.cs" />
+    <Compile Include="Structure\IWeaponItem.cs" />
+    <Compile Include="Gear\Weapons\AbstractWeaponItem.cs" />
+    <Compile Include="Gear\Weapons\SecondaryWeapon.cs" />
+    <Compile Include="Gear\Armour\Types\Shield.cs" />
+    <Compile Include="Gear\Armour\Types\Shinguard.cs" />
+    <Compile Include="Gear\Armour\Types\Shoulderguard.cs" />
+    <Compile Include="Gear\Weapons\Weapon.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="DNA.cs" />
     <Compile Include="Equipment.cs" />
+    <Compile Include="Structure\IItem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Gear\Weapons\WeaponType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
