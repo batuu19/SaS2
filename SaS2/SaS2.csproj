@@ -43,6 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fighting\Arena.cs" />
+    <Compile Include="Fighting\AttackType.cs" />
+    <Compile Include="Fighting\Warrior.cs" />
+    <Compile Include="MathHelper.cs" />
     <Compile Include="RandomCharacter.cs" />
     <Compile Include="RandomHelper.cs" />
     <Compile Include="StaticHelper.cs" />
