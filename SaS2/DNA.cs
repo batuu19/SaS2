@@ -16,5 +16,18 @@ namespace SaS2
         public int Charisma { get; set; }
         public int Stamina { get; set; }
         public int Magicka { get; set; }
+
+        public DNA() { }
+        public DNA(int initValue)
+        {
+            Strength = initValue;
+            Speed = initValue;
+            Attack = initValue;
+            Defence = initValue;
+            Vitality = initValue;
+            Charisma = initValue;
+            Stamina = initValue;
+            Magicka = initValue;
+        }
     }
 }

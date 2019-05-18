@@ -111,7 +111,7 @@ namespace SaS2
             new Weapon(1,"Blade of the Empire",3,200,800,4),
         };
         List<IArmourItem> armoursTable = new List<IArmourItem>();
-
+        Random rnd = new Random();
         public void Init()
         {
             var setsNames = Enum.GetNames(typeof(ArmourSet));
@@ -126,46 +126,23 @@ namespace SaS2
                 {
                     if ((ArmourType)type != ArmourType.UNDEFINED)
                     {
-                        dynamic armour = null;
-                        switch ((ArmourType)type)
-                        {
-                            case ArmourType.UNDEFINED:
+                        var armour = StaticHelper.GetArmour((ArmourType)type);
 
-                                break;
-                            case ArmourType.BOOT:
-                                armour = new Boot();
-                                break;
-                            case ArmourType.SHINGUARD:
-                                armour = new Shinguard();
-                                break;
-                            case ArmourType.GREAVES:
-                                armour = new Greaves();
-                                break;
-                            case ArmourType.BREASTPLATE:
-                                armour = new Breastplate();
-                                break;
-                            case ArmourType.GAUNTLET:
-                                armour = new Gauntlet();
-                                break;
-                            case ArmourType.SHOULDERGUARD:
-                                armour = new Shoulderguard();
-                                break;
-                            case ArmourType.HELMET:
-                                armour = new Helmet();
-                                break;
-                            case ArmourType.SHIELD:
-                                armour = new Shield();
-                                break;
-                        }
-
-                        ((IArmourItem)armour).Name = string.Format("{0} {1}", setName, Enum.GetName(typeof(ArmourType), type).ToLower());
-                        ((IArmourItem)armour).RequiredLevel = i/3 == 0?1:i/3*6;//1,1,1,6,6,6,12,18,24...
-                        ((IArmourItem)armour).ArmourValue = StaticHelper.GetArmourValue((ArmourType)type) * (i + 2);
+                        armour.Name = string.Format("{0} {1}", setName, Enum.GetName(typeof(ArmourType), type).ToLower());
+                        //TODO: fix autogenerate armour levels
+                        armour.RequiredLevel = i/3 == 0?1:i/3*6;//1,1,1,6,6,6,12,12,12...
+                        armour.ArmourValue = StaticHelper.GetArmourValue((ArmourType)type) * (i + 2);
                         armoursTable.Add(armour);
                     }
                 }
                 i++;
             }
+        }
+
+        public void Test()
+        {
+            RandomCharacter randomCharacter = new RandomCharacter();
+            var eq = randomCharacter.GetRandomEquipment(rnd,1,armoursTable,weaponsTable);
         }
     }
 }

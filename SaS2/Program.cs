@@ -12,6 +12,7 @@ namespace SaS2
         {
             Game game = new Game();
             game.Init();
+            game.Test();
         }
     }
 }

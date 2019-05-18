@@ -25,6 +25,16 @@ namespace SaS2
 
         public List<IArmourItem> ArmourItems => new List<IArmourItem> { Shoulderguard, Gauntlet, Breastplate, Helmet, Greaves, Shinguard, Boot, Shield };
 
-        
+        public void Add(IArmourItem armourItem)
+        {
+            if (armourItem is Shoulderguard) Shoulderguard = (Shoulderguard)armourItem;
+            if (armourItem is Gauntlet) Gauntlet = (Gauntlet)armourItem;
+            if (armourItem is Breastplate) Breastplate = (Breastplate)armourItem;
+            if (armourItem is Helmet) Helmet = (Helmet)armourItem;
+            if (armourItem is Greaves) Greaves = (Greaves)armourItem;
+            if (armourItem is Shinguard) Shinguard = (Shinguard)armourItem;
+            if (armourItem is Boot) Boot = (Boot)armourItem;
+            if (armourItem is Shield) Shield = (Shield)armourItem;
+        }
     }
 }

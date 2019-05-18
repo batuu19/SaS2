@@ -1,5 +1,6 @@
 ﻿using SaS2.Gear.Armour;
 using SaS2.Gear.Weapons;
+using SaS2.Structure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,6 +95,31 @@ namespace SaS2
                     return typeof(Shield);
                 default:
                     return null;
+            }
+        }
+
+        public static IArmourItem GetArmour(ArmourType type)
+        {
+            switch (type)
+            {
+                case ArmourType.BOOT:
+                    return new Boot();
+                case ArmourType.SHINGUARD:
+                    return new Shinguard();
+                case ArmourType.GREAVES:
+                    return new Greaves();
+                case ArmourType.BREASTPLATE:
+                    return new Breastplate();
+                case ArmourType.GAUNTLET:
+                    return new Gauntlet();
+                case ArmourType.SHOULDERGUARD:
+                    return new Shoulderguard();
+                case ArmourType.HELMET:
+                    return new Helmet();
+                case ArmourType.SHIELD:
+                    return new Shield();
+                default:
+                    throw new ArgumentNullException("Undefined");
             }
         }
 

@@ -13,6 +13,7 @@ namespace SaS2
         public int Level { get; set; }
 
         public int PhysicalSize => 80 + (int)Math.Round(DNA.Strength / 1.5);
-        public int Hitpoints => Level * 10 + DNA.Vitality * 20;
+        public int HitpointsMax => Level * 10 + DNA.Vitality * 20;
+        public int Hitpoints { get; set; }
     }
 }

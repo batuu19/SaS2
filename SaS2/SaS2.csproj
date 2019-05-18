@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RandomCharacter.cs" />
+    <Compile Include="RandomHelper.cs" />
     <Compile Include="StaticHelper.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Gear\Armour\AbstractArmourItem.cs" />
