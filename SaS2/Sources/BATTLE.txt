@@ -1,0 +1,2123 @@
+﻿function randomBetween(a, b)
+{
+   return a + Math.floor(Math.random() * (b - a + 1));
+}
+function get_percentage(a, b)
+{
+   return a / b * 100;
+}
+function add_percentage(a, b)
+{
+   b = b / 100;
+   return Math.ceil(a * b);
+}
+function check_stats(whichcharacter)
+{
+   if(whichcharacter.staminaleft >= whichcharacter.staminamax)
+   {
+      whichcharacter.staminaleft = whichcharacter.staminamax;
+   }
+   if(whichcharacter.staminaleft <= 0)
+   {
+      whichcharacter.staminaleft = 0;
+   }
+   if(whichcharacter.hitpoints >= whichcharacter.hitpointsmax)
+   {
+      whichcharacter.hitpoints = whichcharacter.hitpointsmax;
+   }
+   if(whichcharacter.hitpoints <= 0)
+   {
+      whichcharacter.hitpoints = 0;
+   }
+   if(whichcharacter.armourclass >= whichcharacter.armourclass_max)
+   {
+      whichcharacter.armourclass = whichcharacter.armourclass_max;
+   }
+   if(whichcharacter.armourclass <= 0)
+   {
+      whichcharacter.armourclass = 0;
+   }
+}
+function check_flipping(which_icon, whichcharacter, icon_above)
+{
+   if(whichcharacter._xscale < 0 || which_icon._xscale < 0)
+   {
+      which_icon._xscale = - which_icon._xscale;
+   }
+   which_icon._y = -240;
+}
+function magic_damage_character(defender, attacker, game_defender, game_attacker, damage_method, bonus_frame, damage)
+{
+   bonus_icon = defender.attachMovie("bonus_icon","bonus_icon",25005);
+   if(game_defender.gladiator_dir == "left")
+   {
+      bonus_icon._x = bonus_icon._x + 100;
+   }
+   else
+   {
+      bonus_icon._x = bonus_icon._x - 100;
+   }
+   bonus_icon.damage_splat.gotoAndStop(bonus_frame);
+   bonus_icon.bonus = Math.ceil(damage);
+   check_flipping(bonus_icon,defender);
+   _global.crowd_action = 2;
+   defender.gotoAndPlay(damage_method);
+   if(game_defender.armourclass > 0)
+   {
+      game_defender.armourclass_temp = game_defender.armourclass;
+      game_defender.armourclass = game_defender.armourclass - damage;
+      if(game_defender.armourclass < 0)
+      {
+         damage = damage - game_defender.armourclass_temp;
+         game_defender.armourclass_temp = 0;
+      }
+   }
+   if(game_defender.armourclass <= 0)
+   {
+      game_defender.hitpoints = game_defender.hitpoints - damage;
+   }
+   game_defender.psyche_up = 1;
+   stamina_bonus = get_percentage(game_defender.breastplate,100);
+   stamina_bonus = add_percentage(damage,stamina_bonus);
+   game_defender.staminaleft = game_defender.staminaleft + stamina_bonus;
+   check_stats(game_defender);
+   if(game_defender.hitpoints <= 0 || game_defender.hitpoints < game_defender.hitpointsmax && _global.fight_mode != "tournament")
+   {
+      _global.phasecomplete = true;
+      if(_global.fight_mode != "duel")
+      {
+         death(defender,"slain");
+      }
+      else
+      {
+         death(defender,"yield");
+      }
+   }
+}
+function damagecharacter(defender, attacker, game_defender, game_attacker, damage_method, attack_direction)
+{
+   damage_icon = defender.attachMovie("damage_icon","damage_icon",25000);
+   damage_icon.damage_splat.gotoAndStop(1);
+   if(damage_method == "critical")
+   {
+      _global.crowd_action = 8;
+      damage_icon.damage_splat.gotoAndStop(3);
+   }
+   if(damage_method == "taunt")
+   {
+      _global.crowd_action = 3;
+      damage_method = "normal";
+   }
+   if(damage_method == "grievous")
+   {
+      _global.crowd_action = 20;
+      damage_icon.damage_splat.gotoAndStop(5);
+      game_defender.psyche_up = 1;
+      game_attacker.psyche_up = 1;
+   }
+   damage_icon._xscale = damage_icon._yscale = 240 - _global.maxscale * 1.5;
+   check_flipping(damage_icon,defender);
+   damage = Math.ceil(damage);
+   damage_icon.damage = this.damage;
+   remove_armour_chance = randomBetween(1,100);
+   if(damage_method == "grievous")
+   {
+      remove_armour(game_defender,defender,attack_direction);
+   }
+   if(remove_armour_chance > 66)
+   {
+      remove_armour(game_defender,defender,attack_direction);
+   }
+   if(damage_method == "normal")
+   {
+      _global.crowd_action = 2;
+      if(game_defender.armourclass > 0)
+      {
+         game_defender.armourclass_temp = game_defender.armourclass;
+         game_defender.armourclass = game_defender.armourclass - damage;
+         if(game_defender.armourclass < 0)
+         {
+            damage_icon.damage_splat.gotoAndStop(2);
+            damage = damage - game_defender.armourclass_temp;
+            game_defender.armourclass_temp = 0;
+         }
+      }
+   }
+   if(game_defender.armourclass <= 0 || damage_method != "normal")
+   {
+      if(damage_icon.damage_splat._currentframe == 1)
+      {
+         damage_icon.damage_splat.gotoAndStop(2);
+      }
+      game_defender.hitpoints = game_defender.hitpoints - damage;
+   }
+   stamina_bonus = get_percentage(game_defender.breastplate,100);
+   stamina_bonus = add_percentage(damage,stamina_bonus);
+   game_defender.staminaleft = game_defender.staminaleft + stamina_bonus;
+   check_stats(game_defender);
+   if(game_defender.hitpoints <= 0 || game_defender.hitpoints < game_defender.hitpointsmax && _global.fight_mode != "tournament")
+   {
+      _global.phasecomplete = true;
+      if(_global.fight_mode != "duel")
+      {
+         if(attack_direction <= 12)
+         {
+            death(defender,"slain");
+         }
+         else if(attack_direction == 20)
+         {
+            death(defender,"taunt");
+         }
+         else if(attack_direction >= 21 && attack_direction <= 23)
+         {
+            death(defender,"arrow");
+         }
+         else if(attack_direction == 30)
+         {
+            death(defender,"grievous");
+         }
+      }
+      else
+      {
+         death(defender,"yield");
+      }
+   }
+   if(attack_direction >= 5 && attack_direction <= 12 || attack_direction == 30)
+   {
+      randosmash = randomBetween(1,4);
+      if(randosmash > 3 || attack_direction == 30)
+      {
+         if(defender.gladiator_dir == "left")
+         {
+            force = this.damage + game_attacker.strength * 6;
+            if(force < 20)
+            {
+               force = 20;
+            }
+            if(force > 80)
+            {
+               defender.gotoAndPlay("knockback");
+            }
+         }
+         else
+         {
+            force = - this.damage + game_attacker.strength * 6;
+            if(force > -20)
+            {
+               force = -20;
+            }
+            if(force < -80)
+            {
+               defender.gotoAndPlay("knockback");
+            }
+         }
+         knockback(defender,force);
+      }
+   }
+   game_defender.psyche_up = 1;
+   magicweapon_percentage = randomBetween(1,100);
+   if(magicweapon_percentage < game_attacker.weapon_enchantment_potency * 10)
+   {
+      if(game_attacker.equipped_weapon == 1 && game_attacker.weapon_enchantment_type == 2 || game_attacker.equipped_weapon == 2 && game_attacker.secondary_weapon_enchantment_type == 2)
+      {
+         game_defender.burning = true;
+      }
+      if(game_attacker.equipped_weapon == 1 && game_attacker.weapon_enchantment_type == 3 || game_attacker.equipped_weapon == 2 && game_attacker.secondary_weapon_enchantment_type == 3)
+      {
+         game_defender.frozen = true;
+      }
+      if(game_attacker.equipped_weapon == 1 && game_attacker.weapon_enchantment_type == 4 || game_attacker.equipped_weapon == 2 && game_attacker.secondary_weapon_enchantment_type == 4)
+      {
+         game_defender.poison = true;
+      }
+      if(game_attacker.equipped_weapon == 1 && game_attacker.weapon_enchantment_type == 5 || game_attacker.equipped_weapon == 2 && game_attacker.secondary_weapon_enchantment_type == 5)
+      {
+         game_defender.life_stolen = true;
+      }
+   }
+}
+function knockback(whichcharacter, force)
+{
+   _global.crowd_action = 1;
+   _global.phasecomplete = true;
+   defender_smashed = true;
+   var knock_defender = new mx.transitions.Tween(whichcharacter,"_x",mx.transitions.easing.Regular.easeOut,whichcharacter._x,whichcharacter._x + force,1,true);
+   knock_defender.onMotionFinished = function()
+   {
+      knock_defender = null;
+      defender_smashed = false;
+   };
+}
+function death(whichcharacter, how_died)
+{
+   _global.deathsequence = how_died;
+   if(whichcharacter == _root.arena.gladiators.villain)
+   {
+      this.gotoAndPlay("combatwon");
+   }
+   if(whichcharacter == _root.arena.gladiators.hero)
+   {
+      this.gotoAndPlay("combatlost");
+   }
+   delete attacker.onEnterFrame;
+   delete defender.onEnterFrame;
+   delete nextphase;
+}
+function defender_hurt(damage_method)
+{
+   criticalmiss = 0;
+   animstate = String("hurt" + attack_direction);
+   if(attack_direction >= 21 && attack_direction <= 23)
+   {
+      animstate = String("hurt" + (attack_direction - 20));
+   }
+   if(attack_direction == 30)
+   {
+      animstate = "knockback";
+   }
+   damagecharacter(defender,attacker,game_defender,game_attacker,damage_method,attack_direction);
+   defender.gotoAndPlay(animstate);
+}
+function defender_blocked()
+{
+   _global.crowd_action = -2;
+   animstate = String("defend" + attack_direction);
+   if(attack_direction >= 21 && attack_direction <= 23)
+   {
+      animstate = String("defend" + (attack_direction - 20));
+   }
+   if(attack_direction == 30)
+   {
+      animstate = "defend12";
+   }
+   defend_icon = defender.attachMovie("defend_icon","defend_icon",25005);
+   defend_icon._xscale = defend_icon._yscale = 240 - _global.maxscale * 1.5;
+   check_flipping(defend_icon,defender);
+   defender.gotoAndPlay(animstate);
+}
+function cast_spell_icon(which_avatar, spell_number)
+{
+   if(which_avatar == _root.arena.gladiators.hero)
+   {
+      cast_spell = _root.arena.combat_panel.attachMovie("cast_spell_image","cast_spell_image",_root.arena.combat_panel.getNextHighestDepth(),{_x:60,_y:50});
+   }
+   else if(which_avatar == _root.arena.gladiators.villain)
+   {
+      cast_spell = _root.arena.combat_panel.attachMovie("cast_spell_image","cast_spell_image",_root.arena.combat_panel.getNextHighestDepth(),{_x:580,_y:50});
+   }
+   cast_spell.inventory_icons.gotoAndStop(spell_number);
+   cast_spell.inventory_icons.battlebutton._visible = false;
+   cast_spell.spellname = _root["inventory" + spell_number][1];
+}
+function add_stats_icon(which_character, which_avatar, stat, stat_number)
+{
+}
+function check_spells(which_character, which_avatar)
+{
+   if(which_avatar.spell_colossus > 0)
+   {
+      which_avatar.spell_colossus = which_avatar.spell_colossus - 1;
+   }
+   if(which_avatar.spell_colossus == 0)
+   {
+      which_avatar._xscale = which_avatar._yscale = which_avatar.oldscale;
+      which_character.strength = which_character.backup_strength;
+      which_character.attack = which_character.backup_attack;
+      which_avatar.spell_colossus = -1;
+   }
+   if(which_avatar.spell_little_fat_kid > 0)
+   {
+      which_avatar.spell_little_fat_kid = which_avatar.spell_little_fat_kid - 1;
+   }
+   if(which_avatar.spell_little_fat_kid == 0)
+   {
+      which_avatar._xscale = which_avatar._yscale = which_avatar.oldscale;
+      which_character.strength = which_character.backup_strength;
+      which_character.attack = which_character.backup_attack;
+      which_avatar.spell_little_fat_kid = -1;
+   }
+   if(which_avatar.spell_swiftsandals > 0)
+   {
+      which_avatar.Rfoot.blendMode = "invert";
+      which_avatar.Lfoot.blendMode = "invert";
+      which_avatar.Rlowerleg.blendMode = "invert";
+      which_avatar.Llowerleg.blendMode = "invert";
+      which_avatar.spell_swiftsandals = which_avatar.spell_swiftsandals - 1;
+   }
+   if(which_avatar.spell_swiftsandals == 0)
+   {
+      which_character.speed = which_character.backup_speed;
+      which_avatar.Rfoot.blendMode = "normal";
+      which_avatar.Lfoot.blendMode = "normal";
+      which_avatar.Rlowerleg.blendMode = "normal";
+      which_avatar.Llowerleg.blendMode = "normal";
+      which_avatar.spell_swiftsandals = -1;
+   }
+   if(which_avatar.spell_bloodlust > 0)
+   {
+      which_avatar.Rlowerarm.blendMode = "difference";
+      which_avatar.Llowerarm.blendMode = "difference";
+      which_avatar.Rlowerarm.blendMode = "difference";
+      which_avatar.Lupperarm.blendMode = "difference";
+      which_avatar.spell_bloodlust = which_avatar.spell_bloodlust - 1;
+   }
+   if(which_avatar.spell_bloodlust == 0)
+   {
+      which_character.strength = which_character.backup_strength;
+      which_character.defence = which_character.backup_defence;
+      which_avatar.Rlowerarm.blendMode = "normal";
+      which_avatar.Llowerarm.blendMode = "normal";
+      which_avatar.Rlowerarm.blendMode = "normal";
+      which_avatar.Lupperarm.blendMode = "normal";
+      which_avatar.spell_bloodlust = -1;
+   }
+   if(which_avatar.spell_regenerate > 0)
+   {
+      which_avatar.spell_regenerate = which_avatar.spell_regenerate - 1;
+   }
+   if(which_avatar.spell_boundless_energy > 0)
+   {
+      which_avatar.spell_boundless_energy = which_avatar.spell_boundless_energy - 1;
+   }
+}
+_root.delete_tooltips();
+changeCombatants = function()
+{
+   _root.arena.gladiators.overlay_villain.gotoAndStop(1);
+   attacker.gotoAndPlay("Standing");
+   defender.gotoAndPlay("Standing");
+   if(game_attacker.psyche_up == 2)
+   {
+      attacker.gotoAndStop("psyche_charging");
+   }
+   if(game_attacker.psyche_up == 3)
+   {
+      attacker.gotoAndStop("psyche_charging2");
+   }
+   if(game_defender.psyche_up == 2)
+   {
+      defender.gotoAndStop("psyche_charging");
+   }
+   if(game_defender.psyche_up == 3)
+   {
+      defender.gotoAndStop("psyche_charging2");
+   }
+   if(_root.arena.gladiators.hero._x - _root.arena.gladiators.hero._width / 2 < _root.arena.gladiators.villain._x + _root.arena.gladiators.villain._width / 2)
+   {
+      _root.arena.gladiators.hero.gladiator_dir = "right";
+      if(_root.arena.gladiators.hero._xscale < 0)
+      {
+         _root.arena.gladiators.hero._xscale = - _root.arena.gladiators.hero._xscale;
+         _root.arena.gladiators.villain._xscale = - _root.arena.gladiators.villain._xscale;
+      }
+      _root.arena.gladiators.villain.gladiator_dir = "left";
+   }
+   else
+   {
+      _root.arena.gladiators.hero.gladiator_dir = "left";
+      if(_root.arena.gladiators.hero._xscale > 0)
+      {
+         _root.arena.gladiators.hero._xscale = - _root.arena.gladiators.hero._xscale;
+         _root.arena.gladiators.villain._xscale = - _root.arena.gladiators.villain._xscale;
+      }
+      _root.arena.gladiators.villain.gladiator_dir = "right";
+   }
+   if(attacker._y > 200)
+   {
+      attacker._y = 200;
+   }
+   if(defender._y < 200)
+   {
+      defender._y = 200;
+   }
+   if(attacker == _root.arena.gladiators.hero)
+   {
+      attacker = _root.arena.gladiators.villain;
+      defender = _root.arena.gladiators.hero;
+      game_attacker = _root.game.villain;
+      game_defender = _root.game.hero;
+      if(villaindecisionA == null)
+      {
+         villainChooseAction();
+      }
+   }
+   else
+   {
+      attacker = _root.arena.gladiators.hero;
+      defender = _root.arena.gladiators.villain;
+      game_attacker = _root.game.hero;
+      game_defender = _root.game.villain;
+   }
+};
+checkattackroll = function()
+{
+   attack_chances(game_attacker,game_defender);
+   diceroll = randomBetween(1,100);
+   if(attack_direction >= 1 && attack_direction <= 4)
+   {
+      damage = game_attacker.min_damage;
+      criticalhit = randomBetween(-20,20);
+      rollneeded = 100 - game_attacker.quick_percentage;
+   }
+   else if(attack_direction >= 5 && attack_direction <= 8)
+   {
+      damage = randomBetween(game_attacker.min_damage,game_attacker.max_damage);
+      criticalhit = randomBetween(1,20);
+      rollneeded = 100 - game_attacker.normal_percentage;
+   }
+   else if(attack_direction >= 9 && attack_direction <= 12)
+   {
+      criticalhit = randomBetween(5,20);
+      damage = game_attacker.max_damage;
+      rollneeded = 100 - game_attacker.power_percentage;
+   }
+   else if(attack_direction == 20)
+   {
+      criticalhit = 21;
+      damage = Math.round(game_attacker.charisma * 2.5) - game_defender.charisma * 0.25;
+      if(damage < 1)
+      {
+         damage = randomBetween(1,3);
+      }
+      rollneeded = 100 - game_attacker.taunt_percentage;
+   }
+   else if(attack_direction == 21)
+   {
+      criticalhit = randomBetween(-20,20);
+      damage = randomBetween(game_attacker.min_damage,game_attacker.max_damage);
+      rollneeded = 100 - game_attacker.bombard_percentage;
+   }
+   else if(attack_direction == 22)
+   {
+      criticalhit = 0;
+      damage = game_attacker.min_damage;
+      rollneeded = 100 - game_attacker.snipe_percentage;
+   }
+   else if(attack_direction == 23)
+   {
+      damage = Math.ceil(game_attacker.min_damage / 2);
+      rollneeded = 100 - game_attacker.bash_percentage;
+   }
+   else if(attack_direction == 30)
+   {
+      criticalhit = 20;
+      damage = Math.round(game_attacker.max_damage * 1.5);
+      rollneeded = 100 - Math.round(game_attacker.normal_percentage);
+   }
+   if(diceroll >= rollneeded)
+   {
+      deflect_critical = randomBetween(1,100);
+      deflect_needed = get_percentage(100 - game_defender.helmet * 1.5 + game_defender.greaves,100);
+      if(deflect_critical >= deflect_needed)
+      {
+         criticalhit = 0;
+      }
+      if(attack_direction == 30)
+      {
+         defender_hurt("grievous");
+      }
+      else if(attack_direction == 20)
+      {
+         defender_hurt("taunt");
+      }
+      else if(criticalhit == 20 && attack_direction != 20)
+      {
+         defender_hurt("critical");
+      }
+      else
+      {
+         defender_hurt("normal");
+      }
+   }
+   else
+   {
+      defender_blocked();
+   }
+};
+changeCombatants();
+nextphase = function()
+{
+   demand_move = 1;
+   check_spells(game_attacker,attacker);
+   check_spells(game_defender,defender);
+   game_attacker.staminaleft = game_attacker.staminaleft - game_attacker.staminacost;
+   game_attacker.staminaleft = game_attacker.staminaleft + Math.round(game_attacker.stamina / 4);
+   bonus = Math.round(game_attacker.stamina / 4);
+   add_stats_icon(game_attacker,attacker,bonus,2);
+   check_stats(game_attacker);
+   if(attacker.spell_regenerate > 0)
+   {
+      game_attacker.hitpoints = game_attacker.hitpoints + Math.round(game_attacker.hitpointsmax / 4);
+      bonus = Math.round(game_attacker.hitpointsmax / 4);
+      add_stats_icon(game_attacker,attacker,bonus,1);
+      check_stats(game_attacker);
+   }
+   if(attacker.spell_boundless_energy > 0)
+   {
+      game_attacker.staminaleft = game_attacker.staminaleft + Math.round(game_attacker.staminamax / 4);
+      bonus = Math.round(game_attacker.stamina / 4);
+      add_stats_icon(game_attacker,attacker,bonus,2);
+      check_stats(game_attacker);
+      check_stats(game_attacker);
+   }
+   _global.crowd_interest = _global.crowd_interest + _global.crowd_action;
+   if(_global.crowd_interest < 1)
+   {
+      _global.crowd_interest = 1;
+   }
+   else if(_global.crowd_interest > 100)
+   {
+      _global.crowd_interest = 100;
+   }
+   _global.crowd_action = 0;
+   check_stats(game_attacker);
+   if(phase_decision != "psyche_up")
+   {
+      game_attacker.psyche_up = 1;
+   }
+   _root.battlevalues(game_attacker);
+   _root.battlevalues(game_defender);
+   if(_global.battle_action < 3)
+   {
+      _global.battle_action++;
+      changeCombatants();
+   }
+   if(_global.battle_action == 3)
+   {
+      changeCombatants();
+      _global.battle_action = null;
+      delete attacker.onEnterFrame;
+      delete defender.onEnterFrame;
+      this.gotoAndPlay("initialise");
+   }
+};
+attacker.onEnterFrame = function()
+{
+   if(_root.arena.fightdistance < 100)
+   {
+      if(_root.arena.gladiators.hero.gladiator_dir == "left")
+      {
+         _root.arena.gladiators.hero._x++;
+         _root.arena.gladiators.villain._x--;
+      }
+      else
+      {
+         _root.arena.gladiators.hero._x--;
+         _root.arena.gladiators.villain._x++;
+      }
+   }
+   if(demand_move == null)
+   {
+      demand_move = 1;
+   }
+   demand_move++;
+   if(demand_move >= 60 && attacker._y >= attacker.grounded && bullet_in_air != true || demand_move >= 200)
+   {
+      demand_move = 1;
+      attacker.grounded = null;
+      attacker.struck = null;
+      defender.struck = null;
+      defender.grounded = null;
+      nextphase();
+   }
+   if(attacker != _root.arena.gladiators.hero)
+   {
+      _global.phasecomplete = false;
+   }
+   if(knock_defender == null || knock_defender == undefined)
+   {
+      if(attacker._x < -2100)
+      {
+         attacker._x = -2100;
+         if(attacker._y >= attacker.grounded)
+         {
+            attacker._y = attacker.grounded;
+            attacker.grounded = null;
+            attacker.destination = null;
+            nextphase();
+         }
+      }
+      if(attacker._x > 2100)
+      {
+         attacker._x = 2100;
+         if(attacker._y >= attacker.grounded)
+         {
+            attacker._y = attacker.grounded;
+            attacker.grounded = null;
+            attacker.destination = null;
+            nextphase();
+         }
+      }
+      if(defender._x < -2100)
+      {
+         defender._x = -2100;
+      }
+      if(defender._x > 2100)
+      {
+         defender._x = 2100;
+      }
+   }
+   _root.arena.gladiators.overlay_villain.gotoAndStop(2);
+   if(_global.battle_action == 1)
+   {
+      phase_decision = decisionA;
+   }
+   else if(_global.battle_action == 2)
+   {
+      phase_decision = villaindecisionA;
+   }
+   else if(_global.battle_action == 3)
+   {
+      phase_decision = decisionB;
+   }
+   else if(_global.battle_action == 4)
+   {
+      phase_decision = villaindecisionB;
+   }
+   else
+   {
+      phase_decision = null;
+   }
+   if(phase_decision == "walkleft")
+   {
+      game_attacker.staminacost = Math.round(game_attacker.movement_speed);
+      if(attacker.destination == null)
+      {
+         attacker.gotoAndPlay("StepBack");
+         attacker_x_walk = game_attacker.movement_speed * 16;
+         walk_bonus = get_percentage(100 + game_attacker.boot * 2,100);
+         attacker_x_walk = add_percentage(attacker_x_walk,walk_bonus);
+         attacker.destination = attacker._x - attacker_x_walk;
+         if(attacker.destination < defender._x + game_defender.physical_size && attacker.gladiator_dir == "left")
+         {
+            attacker.destination = defender._x + game_defender.physical_size;
+         }
+      }
+      attacker._x = attacker._x - Math.ceil((attacker._x - attacker.destination) / 8);
+      if(attacker._x <= attacker.destination + 20)
+      {
+         attacker.destination = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "walkright")
+   {
+      game_attacker.staminacost = Math.round(game_attacker.movement_speed);
+      if(attacker.destination == null)
+      {
+         attacker.gotoAndPlay("StepForward");
+         attacker_x_walk = game_attacker.movement_speed * 16;
+         walk_bonus = get_percentage(100 + game_attacker.boot * 2,100);
+         attacker_x_walk = add_percentage(attacker_x_walk,walk_bonus);
+         attacker.destination = attacker._x + attacker_x_walk;
+         if(attacker.destination > defender._x - game_defender.physical_size && attacker.gladiator_dir == "right")
+         {
+            attacker.destination = defender._x - game_defender.physical_size;
+         }
+      }
+      attacker._x = attacker._x + Math.ceil((attacker.destination - attacker._x) / 8);
+      if(attacker._x >= attacker.destination - 20)
+      {
+         attacker.destination = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "runleft")
+   {
+      game_attacker.staminacost = Math.round(game_attacker.movement_speed);
+      if(attacker.destination == null)
+      {
+         attacker.gotoAndPlay("RunBack");
+         attacker.destination = attacker._x - game_attacker.movement_speed * 40;
+      }
+      attacker._x = attacker._x - Math.ceil((attacker._x - attacker.destination) / 8);
+      if(attacker.gladiator_dir == "left" && attacker._x < defender._x + attacker.physical_size)
+      {
+         attacker.destination = null;
+         nextphase();
+      }
+      if(attacker._x <= attacker.destination + 10)
+      {
+         attacker.destination = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "runright")
+   {
+      game_attacker.staminacost = Math.round(game_attacker.movement_speed);
+      if(attacker.destination == null)
+      {
+         attacker.gotoAndPlay("RunForward");
+         attacker.destination = attacker._x + game_attacker.movement_speed * 40;
+      }
+      attacker._x = attacker._x + Math.ceil((attacker.destination - attacker._x) / 8);
+      if(attacker.gladiator_dir == "right" && attacker._x > defender._x - attacker.physical_size)
+      {
+         attacker.destination = null;
+         nextphase();
+      }
+      if(attacker._x >= attacker.destination - 10)
+      {
+         attacker.destination = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "chargeright")
+   {
+      _global.crowd_action = 2;
+      game_attacker.staminacost = Math.round(game_attacker.movement_speed * 4);
+      if(attacker.destination == null)
+      {
+         attacker.gotoAndPlay("Charge");
+         attacker.destination = attacker._x + game_attacker.movement_speed * 20;
+      }
+      if(attacker._x <= Math.round(defender._x - game_attacker.weapon_range))
+      {
+         attacker._x = attacker._x + Math.ceil((attacker.destination - attacker._x) / 8);
+      }
+      if(attacker._x > Math.round(defender._x - game_attacker.weapon_range))
+      {
+         if(attacker.struck != true)
+         {
+            attacker.struck = true;
+            attacker.gotoAndPlay("Chargeattack");
+            attacker.attack_direction = 9;
+            checkattackroll();
+         }
+         else if(attacker.charging == false)
+         {
+            attacker.struck = null;
+            attacker.charging = null;
+            attacker.destination = null;
+            nextphase();
+         }
+      }
+      else if(attacker.charging == true)
+      {
+         attacker.charging = null;
+         attacker.struck = null;
+         attacker.destination = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "chargeleft")
+   {
+      _global.crowd_action = 2;
+      game_attacker.staminacost = Math.round(game_attacker.movement_speed * 4);
+      if(attacker.destination == null)
+      {
+         attacker.gotoAndPlay("Charge");
+         attacker.destination = attacker._x - game_attacker.movement_speed * 20;
+      }
+      if(attacker._x >= Math.round(defender._x + game_attacker.weapon_range))
+      {
+         attacker._x = attacker._x - Math.ceil((attacker._x - attacker.destination) / 8);
+      }
+      if(attacker._x < Math.round(defender._x + game_attacker.weapon_range))
+      {
+         if(attacker.struck != true)
+         {
+            attacker.struck = true;
+            attacker.gotoAndPlay("Chargeattack");
+            attacker.attack_direction = 9;
+            checkattackroll();
+         }
+         else if(attacker.charging == false)
+         {
+            attacker.struck = null;
+            attacker.charging = null;
+            attacker.destination = null;
+            nextphase();
+         }
+      }
+      else if(attacker.charging == true)
+      {
+         attacker.charging = null;
+         attacker.struck = null;
+         attacker.destination = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "jumpright")
+   {
+      _global.crowd_action = -2;
+      game_attacker.staminacost = Math.round(game_attacker.movement_speed * 2);
+      if(attacker.grounded == null)
+      {
+         attacker.grounded = attacker._y;
+         attacker.gotoAndPlay("Jump");
+         attacker.leap = - Math.ceil(game_attacker.movement_speed * 0.6);
+         jump_bonus = get_percentage(100 + game_attacker.shinguard * 2,100);
+         attacker.leap = add_percentage(attacker.leap,jump_bonus);
+         if(attacker.leap > -8)
+         {
+            attacker.leap = -8;
+         }
+         if(attacker.leap < -36)
+         {
+            attacker.leap = -36;
+            superjump = randomBetween(1,3);
+            if(superjump == 3)
+            {
+               attacker.gotoAndPlay("Superjump");
+            }
+         }
+      }
+      jump_x_mov = Math.round(game_attacker.movement_speed * 0.6);
+      jump_bonus = get_percentage(100 + game_attacker.shinguard * 2,100);
+      jump_x_mov = add_percentage(jump_x_mov,jump_bonus);
+      attacker._x = attacker._x + jump_x_mov;
+      attacker._y = attacker._y + attacker.leap;
+      attacker.leap = attacker.leap + 1;
+      if(attacker._y >= attacker.grounded)
+      {
+         attacker._y = attacker.grounded;
+         attacker.grounded = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "jumpleft")
+   {
+      _global.crowd_action = -2;
+      game_attacker.staminacost = Math.round(game_attacker.movement_speed * 2);
+      if(attacker.grounded == null)
+      {
+         attacker.grounded = attacker._y;
+         attacker.gotoAndPlay("Jump");
+         attacker.leap = Math.ceil(game_attacker.movement_speed * 0.6);
+         jump_bonus = get_percentage(100 + game_attacker.shinguard * 2,100);
+         attacker.leap = add_percentage(attacker.leap,jump_bonus);
+         attacker.leap = - attacker.leap;
+         if(attacker.leap > -8)
+         {
+            attacker.leap = -8;
+         }
+         if(attacker.leap < -36)
+         {
+            attacker.leap = -36;
+            superjump = randomBetween(1,3);
+            if(superjump == 3)
+            {
+               attacker.gotoAndPlay("Superjump");
+            }
+         }
+      }
+      jump_x_mov = Math.round(game_attacker.movement_speed * 0.6);
+      jump_bonus = get_percentage(100 + game_attacker.shinguard * 2,100);
+      jump_x_mov = add_percentage(jump_x_mov,jump_bonus);
+      attacker._x = attacker._x - jump_x_mov;
+      attacker._y = attacker._y + attacker.leap;
+      attacker.leap = attacker.leap + 1;
+      if(attacker._y >= attacker.grounded)
+      {
+         attacker._y = attacker.grounded;
+         attacker.grounded = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "block")
+   {
+      game_attacker.staminacost = 7;
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         attacker.gotoAndPlay("Block");
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "swap_weapons")
+   {
+      game_attacker.staminacost = 1;
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         attacker.gotoAndPlay("Block");
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         if(game_attacker.equipped_weapon == 1)
+         {
+            game_attacker.equipped_weapon = 2;
+            attacker.weapon.realweapon.attachMovie("weapon" + game_attacker.secondary_weapon,"weapon",0,{_x:0,_y:0});
+            attacker.Rlowerarm.attachMovie("shield1","shield",3,{_x:0,_y:50});
+            _root.itemglow(attacker.weapon,game_attacker.secondary_weapon_enchantment_type,game_attacker.secondary_weapon_enchantment_potency);
+            _root.battlevalues(game_attacker);
+         }
+         else
+         {
+            game_attacker.equipped_weapon = 1;
+            attacker.weapon.realweapon.attachMovie("weapon" + game_attacker.weapon,"weapon",0,{_x:0,_y:0});
+            attacker.Rlowerarm.attachMovie("shield" + game_attacker.shield,"shield",3,{_x:0,_y:50});
+            _root.itemglow(attacker.weapon,game_attacker.weapon_enchantment_type,game_attacker.weapon_enchantment_potency);
+            _root.battlevalues(game_attacker);
+         }
+         nextphase();
+      }
+   }
+   if(phase_decision == "wincrowd")
+   {
+      _global.crowd_action = Math.round(_root.game.hero.charisma / 2);
+      game_attacker.staminacost = 3;
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         if(attacker.wincrowd_move <= 0 || attacker.wincrowd_move == undefined)
+         {
+            attacker.wincrowd_move = 1 + random(6);
+         }
+         attacker.wincrowd_move = attacker.wincrowd_move + 1;
+         if(attacker.wincrowd_move > 6)
+         {
+            attacker.wincrowd_move = 1;
+         }
+         animstate = String("wincrowd" + attacker.wincrowd_move);
+         attacker.gotoAndPlay(animstate);
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "rest")
+   {
+      _global.crowd_action = -2;
+      game_attacker.staminacost = - Math.round(game_attacker.stamina * 15);
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         attacker.gotoAndPlay("rest");
+         game_attacker.hitpoints = game_attacker.hitpoints + (3 + Math.ceil(game_attacker.stamina / 2));
+         bonus = game_attacker.stamina;
+         game_attacker.staminaleft = game_attacker.staminaleft + bonus;
+         add_stats_icon(game_attacker,attacker,bonus,1);
+         check_stats(game_attacker);
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "frozen")
+   {
+      _global.crowd_action = 0;
+      game_attacker.staminacost = 0;
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         attacker.gotoAndPlay("frozen");
+         if(game_attacker.equipped_weapon == 1)
+         {
+            magic_damage_character(attacker,defender,game_attacker,game_defender,"frozen",5,game_defender.weapon_enchantment_damage);
+         }
+         else
+         {
+            magic_damage_character(attacker,defender,game_attacker,game_defender,"frozen",5,game_defender.secondary_weapon_enchantment_damage);
+         }
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "life_stolen")
+   {
+      _global.crowd_action = 0;
+      game_attacker.staminacost = 0;
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         attacker.gotoAndPlay("lifesteal");
+         if(game_attacker.equipped_weapon == 1)
+         {
+            magic_damage_character(attacker,defender,game_attacker,game_defender,"lifesteal",6,game_defender.weapon_enchantment_damage);
+         }
+         else
+         {
+            magic_damage_character(attacker,defender,game_attacker,game_defender,"lifesteal",6,game_defender.secondary_weapon_enchantment_damage);
+         }
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "poisoned")
+   {
+      _global.crowd_action = 0;
+      game_attacker.staminacost = 0;
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         attacker.gotoAndPlay("poisoned");
+         if(game_attacker.equipped_weapon == 1)
+         {
+            magic_damage_character(attacker,defender,game_attacker,game_defender,"poisoned",7,game_defender.weapon_enchantment_damage);
+         }
+         else
+         {
+            magic_damage_character(attacker,defender,game_attacker,game_defender,"poisoned",7,game_defender.secondary_weapon_enchantment_damage);
+         }
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "burning")
+   {
+      _global.crowd_action = 0;
+      game_attacker.staminacost = 0;
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         attacker.gotoAndPlay("burning");
+         if(game_attacker.equipped_weapon == 1)
+         {
+            magic_damage_character(attacker,defender,game_attacker,game_defender,"burning",4,game_defender.weapon_enchantment_damage);
+         }
+         else
+         {
+            magic_damage_character(attacker,defender,game_attacker,game_defender,"burning",4,game_defender.secondary_weapon_enchantment_damage);
+         }
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "drink_potion")
+   {
+      _global.crowd_action = -3;
+      game_attacker.staminacost = 0;
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         attacker.gotoAndPlay("drink_potion");
+         attacker.potions.gotoAndPlay(game_attacker.inventory_action - 1);
+         if(game_attacker.inventory_action == 2)
+         {
+            bonus = Math.round(game_attacker.hitpointsmax * 0.25);
+            game_attacker.hitpoints = game_attacker.hitpoints + bonus;
+            bonus_icon = attacker.attachMovie("bonus_icon","bonus_icon",25001);
+            bonus_icon.damage_splat.gotoAndStop(1);
+            bonus_icon.bonus = "+ " + bonus;
+         }
+         if(game_attacker.inventory_action == 3)
+         {
+            bonus = Math.round(game_attacker.hitpointsmax * 0.5);
+            game_attacker.hitpoints = game_attacker.hitpoints + bonus;
+            bonus_icon = attacker.attachMovie("bonus_icon","bonus_icon",25001);
+            bonus_icon.damage_splat.gotoAndStop(1);
+            bonus_icon.bonus = "+ " + bonus;
+         }
+         if(game_attacker.inventory_action == 4)
+         {
+            bonus = Math.round(game_attacker.hitpointsmax * 0.75);
+            game_attacker.hitpoints = game_attacker.hitpoints + bonus;
+            bonus_icon = attacker.attachMovie("bonus_icon","bonus_icon",25001);
+            bonus_icon.damage_splat.gotoAndStop(1);
+            bonus_icon.bonus = "+ " + bonus;
+         }
+         if(game_attacker.inventory_action == 5)
+         {
+            bonus = game_attacker.hitpointsmax;
+            game_attacker.hitpoints = game_attacker.hitpoints + bonus;
+            bonus_icon = attacker.attachMovie("bonus_icon","bonus_icon",25001);
+            bonus_icon.damage_splat.gotoAndStop(1);
+            bonus_icon.bonus = "+ " + bonus;
+         }
+         if(game_attacker.inventory_action == 6)
+         {
+            bonus = Math.round(game_attacker.staminamax * 0.5);
+            game_attacker.staminaleft = game_attacker.staminaleft + bonus;
+            bonus_icon = attacker.attachMovie("bonus_icon","bonus_icon",25001);
+            bonus_icon.damage_splat.gotoAndStop(2);
+            bonus_icon.bonus = "+ " + bonus;
+         }
+         if(game_attacker.inventory_action == 7)
+         {
+            bonus = Math.round(game_attacker.staminamax);
+            game_attacker.staminaleft = game_attacker.staminaleft + bonus;
+            bonus_icon = attacker.attachMovie("bonus_icon","bonus_icon",25001);
+            bonus_icon.damage_splat.gotoAndStop(2);
+            bonus_icon.bonus = "+ " + bonus;
+         }
+         if(game_attacker.inventory_action == 8)
+         {
+            bonus = Math.round(game_attacker.armourclass * 0.5);
+            game_attacker.armourclass = game_attacker.armourclass + bonus;
+            bonus_icon = attacker.attachMovie("bonus_icon","bonus_icon",25001);
+            bonus_icon.damage_splat.gotoAndStop(3);
+            bonus_icon.bonus = "+ " + bonus;
+         }
+         if(game_attacker.inventory_action == 9)
+         {
+            bonus = Math.round(game_attacker.armourclass_max);
+            game_attacker.armourclass = game_attacker.armourclass + bonus;
+            bonus_icon = attacker.attachMovie("bonus_icon","bonus_icon",25001);
+            bonus_icon.damage_splat.gotoAndStop(3);
+            bonus_icon.bonus = "+ " + bonus;
+         }
+         check_flipping(bonus_icon,attacker);
+         check_stats(game_attacker);
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "shove")
+   {
+      _global.crowd_action = 2;
+      game_attacker.staminacost = Math.round(game_attacker.strength * 1.5);
+      if(attacker.shove != true)
+      {
+         attacker.shove = true;
+         attacker.gotoAndPlay("shove");
+         if(attacker.gladiator_dir == "right")
+         {
+            force = game_attacker.strength * 12;
+            force_bonus = get_percentage(100 + game_attacker.gauntlet * 2,100);
+            force = add_percentage(force,force_bonus);
+            if(force < 20)
+            {
+               force = 20;
+            }
+            if(force > 100)
+            {
+               defender.gotoAndPlay("knockback");
+            }
+         }
+         else
+         {
+            force = game_attacker.strength * 12;
+            force_bonus = get_percentage(100 + game_attacker.gauntlet * 2,100);
+            force = add_percentage(force,force_bonus);
+            force = - force;
+            if(force > -20)
+            {
+               force = -20;
+            }
+            if(force < -100)
+            {
+               defender.gotoAndPlay("knockback");
+            }
+         }
+         knockback(defender,force);
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         attacker.shove = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "power_attack")
+   {
+      _global.crowd_action = 2;
+      game_attacker.staminacost = Math.round(game_attacker.strength * 3);
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         attack_direction = randomBetween(9,12);
+         if(attack_direction == 9)
+         {
+            attacker.gotoAndPlay("Attack9");
+         }
+         if(attack_direction == 10)
+         {
+            attacker.gotoAndPlay("Attack10");
+         }
+         if(attack_direction == 11)
+         {
+            attacker.gotoAndPlay("Attack11");
+         }
+         if(attack_direction == 12)
+         {
+            attacker.gotoAndPlay("Attack12");
+         }
+         checkattackroll();
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "normal_attack")
+   {
+      game_attacker.staminacost = Math.round(game_attacker.strength * 2);
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         attack_direction = randomBetween(5,8);
+         if(attack_direction == 5)
+         {
+            attacker.gotoAndPlay("Attack5");
+         }
+         if(attack_direction == 6)
+         {
+            attacker.gotoAndPlay("Attack6");
+         }
+         if(attack_direction == 7)
+         {
+            attacker.gotoAndPlay("Attack7");
+         }
+         if(attack_direction == 8)
+         {
+            attacker.gotoAndPlay("Attack8");
+         }
+         checkattackroll();
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "quick_attack")
+   {
+      _global.crowd_action = -1;
+      game_attacker.staminacost = Math.round(game_attacker.strength);
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         attack_direction = randomBetween(1,4);
+         if(attack_direction == 1)
+         {
+            attacker.gotoAndPlay("Attack1");
+         }
+         if(attack_direction == 2)
+         {
+            attacker.gotoAndPlay("Attack2");
+         }
+         if(attack_direction == 3)
+         {
+            attacker.gotoAndPlay("Attack3");
+         }
+         if(attack_direction == 4)
+         {
+            attacker.gotoAndPlay("Attack4");
+         }
+         checkattackroll();
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "bash_attack")
+   {
+      game_attacker.staminacost = Math.round(game_attacker.strength * 2);
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         attack_direction = 23;
+         attacker.gotoAndPlay("Attack2");
+         checkattackroll();
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "psyche_up")
+   {
+      game_attacker.staminacost = Math.round(game_attacker.strength * 2);
+      if(attacker.struck == null)
+      {
+         attacker.struck = false;
+         if(game_attacker.psyche_up == 1)
+         {
+            attacker.gotoAndPlay("psyche_up");
+         }
+         if(game_attacker.psyche_up == 2)
+         {
+            t;
+            attacker.gotoAndPlay("psyche_up2");
+         }
+         if(game_attacker.psyche_up == 3)
+         {
+            _global.crowd_action = 3;
+            attacker.gotoAndPlay("psyche_up3");
+            if(game_attacker.psyche_up == 3)
+            {
+               if(attacker.gladiator_dir == "right")
+               {
+                  if(attacker._x > Math.round(defender._x - (game_attacker.weapon_range + 50)))
+                  {
+                     attack_direction = 30;
+                     checkattackroll();
+                  }
+               }
+               if(attacker.gladiator_dir == "left")
+               {
+                  if(attacker._x < Math.round(defender._x + (game_attacker.weapon_range + 50)))
+                  {
+                     attack_direction = 30;
+                     checkattackroll();
+                  }
+               }
+            }
+            game_attacker.psyche_up = 1;
+         }
+      }
+      if(attacker.struck == true)
+      {
+         game_attacker.psyche_up = game_attacker.psyche_up + 1;
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "taunt")
+   {
+      _global.crowd_action = -2;
+      game_attacker.staminacost = Math.round(game_attacker.charisma);
+      taunttimer++;
+      if(taunttimer > 60)
+      {
+         taunttimer = 0;
+         attacker.struck = null;
+         nextphase();
+      }
+      if(attacker.struck == null)
+      {
+         taunttimer = 1;
+         attack_direction = 20;
+         attacker.struck = false;
+         attacker.gotoAndPlay("taunt");
+         defender.gotoAndPlay("taunted");
+         diceroll = randomBetween(1,100);
+         if(diceroll < game_attacker.taunt_percentage)
+         {
+            taunt_effect = randomBetween(1,6);
+            if(taunt_effect <= 3)
+            {
+               checkattackroll();
+            }
+            else if(taunt_effect == 4)
+            {
+               if(attacker.gladiator_dir == "right")
+               {
+                  force = game_attacker.charisma * 20;
+                  if(force < 20)
+                  {
+                     force = 20;
+                  }
+                  if(force > 100)
+                  {
+                     defender.gotoAndPlay("knockback");
+                  }
+               }
+               else
+               {
+                  force = - game_attacker.charisma * 20;
+                  if(force > -20)
+                  {
+                     force = -20;
+                  }
+                  if(force < -100)
+                  {
+                     defender.gotoAndPlay("knockback");
+                  }
+               }
+               knockback(defender,force);
+            }
+            else if(taunt_effect == 5)
+            {
+               game_defender.psyche_up = 1;
+               game_defender.taunted1 = true;
+               if(game_defender == _root.game.hero.villain)
+               {
+                  villainChooseAction;
+               }
+            }
+            else if(taunt_effect > 5)
+            {
+               game_defender.psyche_up = 1;
+               game_defender.taunted2 = true;
+               if(game_defender == _root.game.hero.villain)
+               {
+                  villainChooseAction;
+               }
+            }
+         }
+         else
+         {
+            defender_blocked();
+         }
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "bombardright" || phase_decision == "bombardleft" || phase_decision == "sniperight" || phase_decision == "snipeleft")
+   {
+      _global.crowd_action = -1;
+      game_attacker.staminacost = Math.round(game_attacker.strength * 3);
+      if(attacker.struck == null)
+      {
+         game_attacker.ammo_left = game_attacker.ammo_left - 1;
+         attacker.struck = false;
+         bullet_in_air = true;
+         if(phase_decision == "bombardright" || phase_decision == "bombardleft")
+         {
+            attacker.gotoAndPlay("bombard");
+            attack_direction = 21;
+         }
+         else
+         {
+            attacker.gotoAndPlay("snipe");
+            attack_direction = 22;
+         }
+      }
+      if(bullet._y > 160 || bullet._x > defender._x && attacker.gladiator_dir == "right" || bullet._x < defender._x && attacker.gladiator_dir == "left")
+      {
+         checkattackroll();
+         bullet_in_air = false;
+         bullet.removeMovieClip();
+      }
+      if(attacker.fired == true)
+      {
+         attacker.fired = false;
+         bulletdepth = 45000;
+         bullet = _root.arena.gladiators.attachMovie("bullet","bullet" + bulletdepth,bulletdepth);
+         bullet.gotoAndStop(game_attacker.secondary_weapon - 60);
+         if(attacker.gladiator_dir == "right")
+         {
+            bullet._x = attacker._x + 30;
+         }
+         else
+         {
+            bullet._x = attacker._x - 30;
+         }
+         bullet._y = attacker._y - (attacker._yscale * 2 + 30);
+         if(phase_decision == "sniperight" || phase_decision == "snipeleft")
+         {
+            bullet._y = attacker._y - (attacker._yscale * 1.5 + 5);
+         }
+         bullet.bulletlife = 1;
+         bullet.bulletcounter = 1;
+         bullet.gravity = 2;
+         if(attacker.gladiator_dir == "right")
+         {
+            bullet.distance_to_enemy = Math.abs(attacker._x - defender._x);
+         }
+         else
+         {
+            bullet.distance_to_enemy = Math.abs(defender._x - attacker._x);
+         }
+         if(phase_decision == "bombardright" || phase_decision == "bombardleft")
+         {
+            if(_global.maxscale == 80)
+            {
+               bullet.Xvelocity = randomBetween(8,18);
+            }
+            if(_global.maxscale < 80)
+            {
+               bullet._xscale = bullet._yscale = 100;
+               bullet.Xvelocity = randomBetween(16,24);
+            }
+            if(_global.maxscale <= 60)
+            {
+               bullet._xscale = bullet._yscale = 130;
+               bullet.Xvelocity = randomBetween(20,30);
+            }
+            if(_global.maxscale <= 40)
+            {
+               bullet._xscale = bullet._yscale = 160;
+               bullet.Xvelocity = randomBetween(30,36);
+            }
+         }
+         else
+         {
+            bullet.Xvelocity = randomBetween(36,36);
+         }
+         bullet.Yvelocity = Math.ceil(bullet.distance_to_enemy / bullet.Xvelocity);
+         bullet.onEnterFrame = function()
+         {
+            bullet.bulletcounter++;
+            if(bullet.bulletcounter >= 2)
+            {
+               bullet.bulletcounter = 1;
+               bullettrail_depth = _root.arena.gladiators.getNextHighestDepth();
+               bullet_trail = _root.arena.gladiators.attachMovie("bullet_trail","bullet_trail" + bullettrail_depth,bullettrail_depth,{_x:this._x,_y:this._y,_rotation:this._rotation});
+               bullet_trail.bullet.gotoAndStop(game_attacker.secondary_weapon - 60);
+            }
+            bullet.Yvelocity = bullet.Yvelocity - bullet.gravity;
+            if(phase_decision == "bombardright" || phase_decision == "bombardleft")
+            {
+               bullet._y = bullet._y - bullet.Yvelocity;
+            }
+            if(phase_decision == "bombardright" || phase_decision == "sniperight")
+            {
+               bullet._x = bullet._x + bullet.Xvelocity;
+               if(phase_decsion == "sniperight")
+               {
+                  bullet._x = bullet._x + bullet.Xvelocity;
+               }
+            }
+            else
+            {
+               bullet._x = bullet._x - bullet.Xvelocity;
+               if(phase_decsion == "snipeleft")
+               {
+                  bullet._x = bullet._x - bullet.Xvelocity;
+               }
+            }
+            bullet.bulletlife = bullet.bulletlife + bullet.Xvelocity;
+            if(phase_decision == "bombardright" || phase_decision == "bombardleft")
+            {
+               bullet.bulletrotus = Math.round(bullet.bulletlife / (bullet.Xvelocity / (bullet.gravity * 2)));
+            }
+            else if(phase_decision == "sniperight")
+            {
+               bullet._rotation = 90;
+            }
+            else
+            {
+               bullet._rotation = -90;
+            }
+            if(bullet.bulletrotus > 170)
+            {
+               bullet.bulletrotus = 170;
+            }
+            bullet._rotation = bullet.bulletrotus;
+            if(attacker.gladiator_dir == "left")
+            {
+               bullet._rotation = - bullet.bulletrotus;
+            }
+         };
+      }
+   }
+   if(phase_decision == "cast_teleport")
+   {
+      _global.crowd_action = 3;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         cast_spell_icon(attacker,48);
+         _root.arena.gladiators.attachMovie("circlets","circlets",_root.arena.gladiators.getNextHighestDepth(),{_x:attacker._x,_y:200});
+         attacker.struck = false;
+         attacker.gotoAndPlay("Cast2");
+      }
+      combatscale();
+      if(attacker.struck == true)
+      {
+         attacker._x = randomBetween(-2000,2000);
+         attacker.gotoAndPlay("Cast2");
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_adulation")
+   {
+      _global.crowd_action = 50;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         cast_spell_icon(attacker,47);
+         attacker.struck = false;
+         attacker.gotoAndPlay("wincrowd1");
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_weaken_armour")
+   {
+      _global.crowd_action = 4;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         cast_spell_icon(attacker,44);
+         attacker.struck = false;
+         attacker.gotoAndPlay("Cast1");
+         attack_direction = 1 + random(9);
+         remove_armour(game_defender,defender,attack_direction);
+         attack_direction = 1 + random(9);
+         remove_armour(game_defender,defender,attack_direction);
+         attack_direction = 1 + random(9);
+         remove_armour(game_defender,defender,attack_direction);
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_whirlwind")
+   {
+      _global.crowd_action = 3;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         cast_spell_icon(attacker,37);
+         attacker.gotoAndPlay("psyche_up3");
+         attacker.struck = false;
+         if(attacker.gladiator_dir == "right")
+         {
+            if(attacker._x > Math.round(defender._x - (game_attacker.weapon_range + 50)))
+            {
+               attack_direction = 30;
+               checkattackroll();
+            }
+         }
+         if(attacker.gladiator_dir == "left")
+         {
+            if(attacker._x < Math.round(defender._x + (game_attacker.weapon_range + 50)))
+            {
+               attack_direction = 30;
+               checkattackroll();
+            }
+         }
+         game_attacker.psyche_up = 1;
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_gale")
+   {
+      _global.crowd_action = 2;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.shove != true)
+      {
+         cast_spell_icon(attacker,38);
+         attacker.shove = true;
+         attacker.gotoAndPlay("Cast1");
+         if(attacker.gladiator_dir == "right")
+         {
+            force = 1000;
+         }
+         else
+         {
+            force = -1000;
+         }
+         defender.gotoAndPlay("knockback");
+         knockback(defender,force);
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         attacker.shove = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_command")
+   {
+      _global.crowd_action = 2;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.shove != true)
+      {
+         cast_spell_icon(attacker,39);
+         defender.gotoAndPlay("knockback_mov");
+         attacker.shove = true;
+         attacker.gotoAndPlay("Cast2");
+      }
+      if(attacker.gladiator_dir == "right")
+      {
+         defender._x = defender._x - 40;
+         if(defender._x <= attacker._x + game_defender.physical_size)
+         {
+            attacker.struck = null;
+            nextphase();
+         }
+      }
+      if(attacker.gladiator_dir == "left")
+      {
+         defender._x = defender._x + 40;
+         if(defender._x >= attacker._x - game_defender.physical_size)
+         {
+            attacker.struck = null;
+            nextphase();
+         }
+      }
+   }
+   if(phase_decision == "cast_ghost_strike")
+   {
+      _global.crowd_action = 5;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         cast_spell_icon(attacker,36);
+         attacker.blendMode = "add";
+         attacker_old_x = attacker._x;
+         attacker._x = defender._x - game_attacker.physical_size;
+         attacker.struck = false;
+         attack_direction = randomBetween(9,12);
+         if(attack_direction == 9)
+         {
+            attacker.gotoAndPlay("Attack9");
+         }
+         if(attack_direction == 10)
+         {
+            attacker.gotoAndPlay("Attack10");
+         }
+         if(attack_direction == 11)
+         {
+            attacker.gotoAndPlay("Attack11");
+         }
+         if(attack_direction == 12)
+         {
+            attacker.gotoAndPlay("Attack12");
+         }
+         checkattackroll();
+      }
+      if(attacker.struck == true)
+      {
+         attacker._x = attacker_old_x;
+         attacker.blendMode = "normal";
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_colossus")
+   {
+      attacker.spell_colossus = 16;
+      _global.crowd_action = 15;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         cast_spell_icon(attacker,42);
+         attacker.struck = false;
+         attacker.gotoAndPlay("Colossus");
+         attacker.oldscale = attacker._yscale;
+         attacker.newscale = 450;
+         game_attacker.strength = game_attacker.backup_strength * 3;
+         game_attacker.attack = game_attacker.backup_attack * 2;
+      }
+      attacker._yscale = Math.ceil((attacker.newscale - attacker._yscale) / 2);
+      attacker._xscale = attacker._yscale;
+      if(attacker.gladiator_dir == "left")
+      {
+         attacker._x = attacker._x - 2;
+      }
+      else
+      {
+         attacker._x = attacker._x + 2;
+      }
+      if(attacker._yscale >= attacker.newscale)
+      {
+         attacker._yscale = attacker._xscale = attacker.newscale;
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_little_fat_kid")
+   {
+      defender.spell_little_fat_kid = 16;
+      _global.crowd_action = 10;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(defender.struck == null)
+      {
+         attacker.gotoAndPlay("Cast2");
+         cast_spell_icon(attacker,33);
+         defender.struck = false;
+         defender.gotoAndPlay("little_fat_kid");
+         defender.oldscale = Number(defender._yscale);
+         defender.newscale = 50;
+         game_defender.strength = Math.round(game_defender.backup_strength / 2);
+         game_defender.attack = Math.round(game_defender.backup_attack / 2);
+      }
+      defender._yscale = Math.ceil((defender.newscale - defender._yscale) / 2);
+      defender._xscale = defender._yscale;
+      if(defender._yscale <= defender.newscale)
+      {
+         defender._yscale = defender._xscale = defender.newscale;
+         defender.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_lightning_bolt" || phase_decision == "cast_frightning_bolt")
+   {
+      _global.crowd_action = 5;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         if(phase_decision == "cast_lightning_bolt")
+         {
+            cast_spell_icon(attacker,34);
+            lightning_damage = randomBetween(30,60);
+            lightning_frame = 1;
+         }
+         if(phase_decision == "cast_frightning_bolt")
+         {
+            cast_spell_icon(attacker,35);
+            lightning_damage = randomBetween(60,360);
+            lightning_frame = 2;
+         }
+         attacker.struck = false;
+         attacker.gotoAndPlay("Cast2");
+         bolt = _root.arena.gladiators.attachMovie("lightning_bolt_combat","lightning_bolt_combat",_root.arena.gladiators.getNextHighestDepth(),{_x:defender._x,_y:50});
+         magic_damage_character(defender,attacker,game_defender,game_attacker,"lightning",8,lightning_damage);
+         bolt.gotoAndStop(lightning_frame);
+      }
+      if(defender.struck == true)
+      {
+         bolt.removeMovieClip();
+         attacker.struck = null;
+         defender.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_death_from_above")
+   {
+      _global.crowd_action = 20;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         cast_spell_icon(attacker,49);
+         boulder_stones = randomBetween(10,20);
+         lightning_frame = 1;
+         attacker.struck = false;
+         attacker.gotoAndPlay("Cast2");
+         i = 1;
+         while(i <= boulder_stones)
+         {
+            boulder = _root.arena.gladiators.attachMovie("boulder_combat","boulder_combat" + i,_root.arena.gladiators.getNextHighestDepth(),{_x:defender._x,_y:-600});
+            boulder._x = boulder._x + randomBetween(-300,300);
+            boulder._y = randomBetween(-600,-800);
+            boulder.yspeed = randomBetween(50,150);
+            boulder._xscale = boulder._yscale = randomBetween(50,100);
+            boulder.cacheAsBitmap = true;
+            boulder.onEnterFrame = function()
+            {
+               if(this._y <= 150)
+               {
+                  this._y = this._y + this.yspeed;
+               }
+               if(this._y > 150 && this.bounced != true)
+               {
+                  this.bounced = true;
+                  this.cacheAsBitmap = false;
+                  this.gotoAndStop(4);
+                  magic_damage_character(defender,attacker,game_defender,game_attacker,"burning",4,40);
+               }
+            };
+            i++;
+         }
+      }
+      if(defender.struck == true)
+      {
+         bolt.removeMovieClip();
+         attacker.struck = null;
+         defender.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_swiftsandals")
+   {
+      attacker.spell_swiftsandals = 20;
+      _global.crowd_action = 3;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         cast_spell_icon(attacker,40);
+         attacker.struck = false;
+         attacker.gotoAndPlay("Cast2");
+         game_attacker.speed = game_attacker.backup_speed * 2;
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_bloodlust")
+   {
+      attacker.spell_bloodlust = 20;
+      _global.crowd_action = 3;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         cast_spell_icon(attacker,41);
+         attacker.struck = false;
+         attacker.gotoAndPlay("Cast2");
+         game_attacker.strength = Math.round(game_attacker.backup_strength * 1.5);
+         game_attacker.defence = Math.round(game_attacker.backup_defence * 0.5);
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_regenerate")
+   {
+      attacker.spell_regenerate = 20;
+      _global.crowd_action = 3;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         cast_spell_icon(attacker,46);
+         attacker.struck = false;
+         attacker.gotoAndPlay("Cast2");
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_boundless_energy")
+   {
+      attacker.spell_boundless_energy = 20;
+      _global.crowd_action = 3;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         cast_spell_icon(attacker,45);
+         attacker.struck = false;
+         attacker.gotoAndPlay("Cast2");
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_rejuvinate")
+   {
+      _global.crowd_action = 3;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         cast_spell_icon(attacker,43);
+         attacker.struck = false;
+         attacker.gotoAndPlay("Rejuvinate");
+         game_attacker.hitpoints = game_attacker.hitpointsmax;
+         game_attacker.staminaleft = game_attacker.staminamax;
+         game_attacker.armourclass = game_attacker.armourclass_max;
+         game_attacker.shoulderguard = whichcharacter.backup_shoulderguard;
+         game_attacker.gauntlet = game_attacker.backup_gauntlet;
+         game_attacker.breastplate = game_attacker.backup_breastplate;
+         game_attacker.helmet = game_attacker.backup_helmet;
+         game_attacker.greaves = game_attacker.backup_greaves;
+         game_attacker.shinguard = game_attacker.backup_shinguard;
+         game_attacker.boot = game_attacker.backup_boot;
+         game_attacker.weapon = game_attacker.backup_weapon;
+         game_attacker.shield = game_attacker.backup_shield;
+         _root.updatecharacter(game_attacker,attacker);
+      }
+      if(attacker.struck == true)
+      {
+         attacker.struck = null;
+         nextphase();
+      }
+   }
+   if(phase_decision == "cast_fireball" || phase_decision == "cast_hell_fireball" || phase_decision == "cast_dire_fireball")
+   {
+      _global.crowd_action = 5;
+      game_attacker.staminacost = Math.round(game_attacker.magicka);
+      if(attacker.struck == null)
+      {
+         bullet_in_air = true;
+         if(phase_decision == "cast_fireball")
+         {
+            cast_spell_icon(attacker,30);
+            fireball_damage = randomBetween(40,80);
+            fireball_frame = 1;
+         }
+         if(phase_decision == "cast_hell_fireball")
+         {
+            cast_spell_icon(attacker,31);
+            fireball_damage = randomBetween(50,150);
+            fireball_frame = 2;
+         }
+         if(phase_decision == "cast_dire_fireball")
+         {
+            cast_spell_icon(attacker,32);
+            fireball_damage = randomBetween(100,300);
+            fireball_frame = 3;
+         }
+         attacker.struck = false;
+         attacker.fired = true;
+         attacker.gotoAndPlay("Cast1");
+      }
+      if(bullet._x > defender._x && attacker.gladiator_dir == "right" || bullet._x < defender._x && attacker.gladiator_dir == "left")
+      {
+         if(bullet._currentframe != 4)
+         {
+            magic_damage_character(defender,attacker,game_defender,game_attacker,"burning",4,fireball_damage);
+            bullet.gotoAndStop(4);
+            bullet.flying = false;
+            bullet_in_air = false;
+         }
+      }
+      if(attacker.fired == true)
+      {
+         attacker.fired = false;
+         bulletdepth = 45000;
+         bullet = _root.arena.gladiators.attachMovie("fireball_combat","fireball_combat" + bulletdepth,bulletdepth);
+         bullet.gotondStop(fireball_frame);
+         if(attacker.gladiator_dir == "right")
+         {
+            bullet._x = attacker._x + 30;
+         }
+         else
+         {
+            bullet._x = attacker._x - 30;
+            bullet._xscale = - bullet._xscale;
+         }
+         bullet._y = attacker._y - (attacker._yscale * 1.5 + 5);
+         bullet.bulletlife = 1;
+         bullet.bulletcounter = 1;
+         bullet.gravity = 2;
+         if(attacker.gladiator_dir == "right")
+         {
+            bullet.distance_to_enemy = Math.abs(attacker._x - defender._x);
+         }
+         else
+         {
+            bullet.distance_to_enemy = Math.abs(defender._x - attacker._x);
+         }
+         if(phase_decision == "cast_fireball")
+         {
+            bullet.Xvelocity = 50;
+         }
+         if(phase_decision == "cast_hell_fireball")
+         {
+            bullet.Xvelocity = 70;
+         }
+         if(phase_decision == "cast_dire_fireball")
+         {
+            bullet.Xvelocity = 90;
+         }
+         bullet.onEnterFrame = function()
+         {
+            if(bullet.flying != false)
+            {
+               if(attacker.gladiator_dir == "right")
+               {
+                  bullet._x = bullet._x + bullet.Xvelocity;
+               }
+               else
+               {
+                  bullet._x = bullet._x - bullet.Xvelocity;
+               }
+            }
+         };
+      }
+   }
+};

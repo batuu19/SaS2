@@ -1,6 +1,21 @@
-﻿1264 - hero battle
+﻿885 - overlay(battle and all)
+	1.1 - percentages, phases
+	1.2 - inventory buttons
+	4 - closerange warrior
+	5 - buttons describtions, far(charge)
+	13 - buttons describtions,close(power,normal,quick)
+	20 - buttons describtions,ranged far(bombard,snipe)
+	28 - buttons describtions,ranged close(bash)
+	52.2 - remove/destroy armour
+	52.3 - check inventory,use item,villain cast spells
+	52.4 - villain choose action
+	52.5 - helpers(check stats/flipping/spells, magic damage,damage,knockback,death,defender hurt/blocked, cast spell icon,
+			change combatants,check attack roll,next phase,attacker.onEnterFrame(phase decisions))
+	62 - combat won
+	74 - combat lost
+1264 - hero battle
 	1 - bounce item, blood
-
+1520 - everything in one sprite
 1824 - dungeon intro story
 1860 - town
 1958 - armoury
@@ -10,3 +25,5 @@
 2144 - duel, tournament menu
 
 2297 - fight?
+
+frame 186 - special events

@@ -77,6 +77,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Sources\BATTLE.txt" />
     <Content Include="Sources\Bosses.txt" />
     <Content Include="Sources\ConstructCharacter.txt" />
     <Content Include="Sources\DayText.txt" />
