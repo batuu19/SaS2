@@ -1,4 +1,6 @@
-﻿using SaS2.Gear.Weapons;
+﻿using SaS2.Gear.Armour;
+using SaS2.Gear.Weapons;
+using SaS2.Structure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +11,14 @@ namespace SaS2
 {
     public class Game
     {
-        new List<string> armourweights = new List<string> { "", "Light", "Medium", "Heavy" };
-        new List<string> armourconditions = new List<string> { "", "Broken", "Badly Damaged", "Damaged", "Slightly Damaged ", "Perfect" };
-        new List<string> armourtypes = new List<string> { "", "boot", "shinguard", "greaves", "breastplate", "gauntlet", "shoulderguard", "helmet", "shield" };
-        new List<string> armoursets = new List<string> { "None", "None", "Peasant", "Cutpurse", "Brigand", "Militia", "Veteran", "Hoplite", "Swashbuckler", "Retarius", "Myrmidon", "Legion", "Warlord", "Centurion", "Knight", "Paladin", "Templar", "Cavalier", "Crusader", "Avenger", "Infernal", "Samurai", "Demon-plate", "Conquerer", "Automaton", "Champions", "Emperors" };
-        new List<int> armoursetweights = new List<int> { 1, 1, 1, 2, 3, 1, 2, 2, 3, 1, 1, 2, 2, 3, 1, 2, 3, 2, 3, 1, 3, 2, 2, 3, 1, 2, 3 };
-        new List<Weapon> weaponsTable = new List<Weapon>
+        //    List<string> armourweights = new List<string> { "", "Light", "Medium", "Heavy" };
+        //    List<string> armourconditions = new List<string> { "", "Broken", "Badly Damaged", "Damaged", "Slightly Damaged ", "Perfect" };
+        //    List<string> armourtypes = new List<string> { "", "boot", "shinguard", "greaves", "breastplate", "gauntlet", "shoulderguard", "helmet", "shield" };
+        //    List<string> armoursets = new List<string> { "None", "None", "Peasant", "Cutpurse", "Brigand", "Militia", "Veteran", "Hoplite", "Swashbuckler", "Retarius", "Myrmidon", "Legion", "Warlord", "Centurion", "Knight", "Paladin", "Templar", "Cavalier", "Crusader", "Avenger", "Infernal", "Samurai", "Demon-plate", "Conquerer", "Automaton", "Champions", "Emperors" };
+        //    List<int> armoursetweights = new List<int> { 1, 1, 1, 2, 3, 1, 2, 2, 3, 1, 1, 2, 2, 3, 1, 2, 3, 2, 3, 1, 3, 2, 2, 3, 1, 2, 3 };
+        List<IWeaponItem> weaponsTable = new List<IWeaponItem>
         {
+            //type,name,weight,mindmg,maxdmg,range
             new Weapon(2,"Rusty knife", 5, 1, 3, 1),
             new Weapon(1,"Dagger",5,3,9,1),
             new Weapon(1,"Shortsword",5,4,16,1),
@@ -107,5 +110,62 @@ namespace SaS2
             new Weapon(1,"Wicks Staff",3,30,300,3),
             new Weapon(1,"Blade of the Empire",3,200,800,4),
         };
+        List<IArmourItem> armoursTable = new List<IArmourItem>();
+
+        public void Init()
+        {
+            var setsNames = Enum.GetNames(typeof(ArmourSet));
+            var typesNames = Enum.GetNames(typeof(ArmourType));
+            var sets = Enum.GetValues(typeof(ArmourSet));
+            var types = Enum.GetValues(typeof(ArmourType));
+
+            int i = 0;
+            foreach (var setName in setsNames)
+            {
+                foreach (var type in types)
+                {
+                    if ((ArmourType)type != ArmourType.UNDEFINED)
+                    {
+                        dynamic armour = null;
+                        switch ((ArmourType)type)
+                        {
+                            case ArmourType.UNDEFINED:
+
+                                break;
+                            case ArmourType.BOOT:
+                                armour = new Boot();
+                                break;
+                            case ArmourType.SHINGUARD:
+                                armour = new Shinguard();
+                                break;
+                            case ArmourType.GREAVES:
+                                armour = new Greaves();
+                                break;
+                            case ArmourType.BREASTPLATE:
+                                armour = new Breastplate();
+                                break;
+                            case ArmourType.GAUNTLET:
+                                armour = new Gauntlet();
+                                break;
+                            case ArmourType.SHOULDERGUARD:
+                                armour = new Shoulderguard();
+                                break;
+                            case ArmourType.HELMET:
+                                armour = new Helmet();
+                                break;
+                            case ArmourType.SHIELD:
+                                armour = new Shield();
+                                break;
+                        }
+
+                        ((IArmourItem)armour).Name = string.Format("{0} {1}", setName, Enum.GetName(typeof(ArmourType), type).ToLower());
+                        ((IArmourItem)armour).RequiredLevel = i/3 == 0?1:i/3*6;//1,1,1,6,6,6,12,18,24...
+                        ((IArmourItem)armour).ArmourValue = StaticHelper.GetArmourValue((ArmourType)type) * (i + 2);
+                        armoursTable.Add(armour);
+                    }
+                }
+                i++;
+            }
+        }
     }
 }

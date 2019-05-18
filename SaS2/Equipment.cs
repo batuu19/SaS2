@@ -25,6 +25,6 @@ namespace SaS2
 
         public List<IArmourItem> ArmourItems => new List<IArmourItem> { Shoulderguard, Gauntlet, Breastplate, Helmet, Greaves, Shinguard, Boot, Shield };
 
-        }
+        
     }
 }

@@ -10,7 +10,8 @@ namespace SaS2
     {
         static void Main(string[] args)
         {
-            Character character = new Character();
+            Game game = new Game();
+            game.Init();
         }
     }
 }

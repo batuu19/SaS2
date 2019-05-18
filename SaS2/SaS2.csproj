@@ -43,9 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StaticHelper.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Gear\Armour\AbstractArmourItem.cs" />
     <Compile Include="Gear\Armour\ArmourSet.cs" />
+    <Compile Include="Gear\Armour\ArmourType.cs" />
     <Compile Include="Gear\Armour\Types\Boot.cs" />
     <Compile Include="Gear\Armour\Types\Breastplate.cs" />
     <Compile Include="Gear\Armour\Types\Gauntlet.cs" />
@@ -82,6 +84,8 @@
     <Content Include="Sources\Frame102.txt" />
     <Content Include="Sources\HeroInit.txt" />
     <Content Include="Sources\RandomiseGladiator.txt" />
+    <Content Include="Sources\ShopArmoury.txt" />
+    <Content Include="Sources\ShopWeapons.txt" />
     <Content Include="Sources\SoundsAndTooltips.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

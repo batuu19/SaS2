@@ -1,0 +1,208 @@
+﻿_root.delete_tooltips();
+function armourbuttons()
+{
+   _root.delete_tooltips();
+   i = 1;
+   while(i <= 60)
+   {
+      itemnumber = this["item" + i]._name.charAt(4) + this["item" + i]._name.charAt(5);
+      itemnumber = Number(itemnumber);
+      if(itemnumber <= 4)
+      {
+         this["item" + i].itemlevel = 1;
+      }
+      else if(itemnumber > 4 && itemnumber <= 6)
+      {
+         this["item" + i].itemlevel = 6;
+      }
+      else if(itemnumber > 6 && itemnumber <= 9)
+      {
+         this["item" + i].itemlevel = 12;
+      }
+      else if(itemnumber > 9 && itemnumber <= 12)
+      {
+         this["item" + i].itemlevel = 18;
+      }
+      else if(itemnumber > 12 && itemnumber <= 15)
+      {
+         this["item" + i].itemlevel = 24;
+      }
+      else if(itemnumber > 15 && itemnumber <= 18)
+      {
+         this["item" + i].itemlevel = 30;
+      }
+      else if(itemnumber > 18 && itemnumber <= 21)
+      {
+         this["item" + i].itemlevel = 36;
+      }
+      else if(itemnumber > 21 && itemnumber <= 24)
+      {
+         this["item" + i].itemlevel = 42;
+      }
+      else if(itemnumber > 24)
+      {
+         this["item" + i].itemlevel = 48;
+      }
+      if(_root.game.hero.herolevel < this["item" + i].itemlevel)
+      {
+         this["item" + i]._alpha = 90;
+         this["item" + i].blendMode = "invert";
+      }
+      this["item" + i].onRollOver = function()
+      {
+         getarmourinfo(this,armourpiece);
+      };
+      this["item" + i].onRelease = function()
+      {
+         _root.clicksound.start();
+         if(this.itemlevel <= _root.game.hero.herolevel)
+         {
+            buyarmour(this,armourpiece,this.itemlevel);
+         }
+         else
+         {
+            bubbletext = "Sorry lad. You need to be at least a level " + this.itemlevel + " gladiator to use this item.";
+         }
+      };
+      i++;
+   }
+}
+function getarmourinfo(whicharmour, armourpiece)
+{
+   itemnumber = whicharmour._name.charAt(4) + whicharmour._name.charAt(5);
+   itemnumber = Number(itemnumber);
+   itemset = _root.armoursets[itemnumber];
+   itemtype = _root.armourtypes[armourpiece];
+   itemname = itemset + " " + itemtype;
+   itemweight = _root.armoursetweights[itemnumber];
+   itemweight = _root.armourweights[itemweight];
+   checkarmour(armourpiece,itemnumber);
+   itemcost = Math.round(itemdefence * itemdefence * 3);
+   reqlevel = "Required level " + whicharmour.itemlevel;
+   if(whicharmour.itemlevel > _root.game.hero.herolevel)
+   {
+      bubbletext = itemname + "\n" + "\n" + reqlevel + "\n" + "\n" + "This item is not available yet.";
+   }
+   else
+   {
+      bubbletext = itemname + "\n" + "\n" + "\n" + "Adds " + itemdefence + " to armour." + "\n" + "This item costs " + itemcost + " gold.";
+   }
+}
+function checkarmour(armourpiece, itemnumber)
+{
+   if(armourpiece == 1)
+   {
+      dval = _global.boot_dval;
+      olditem = _root.game.hero.boot;
+      itembonustxt = Math.round(itemnumber * 2) + " % extra movement speed";
+   }
+   if(armourpiece == 2)
+   {
+      dval = _global.shinguard_dval;
+      olditem = _root.game.hero.shinguard;
+      itembonustxt = Math.round(itemnumber * 2) + " % extra jumping distance";
+   }
+   if(armourpiece == 3)
+   {
+      dval = _global.greaves_dval;
+      olditem = _root.game.hero.greaves;
+      itembonustxt = Math.round(itemnumber) + " % critical hit protection";
+   }
+   if(armourpiece == 4)
+   {
+      dval = _global.breastplate_dval;
+      olditem = _root.game.hero.breastplate;
+      itembonustxt = Math.round(itemnumber) + " % of damage taken converted to energy";
+   }
+   if(armourpiece == 5)
+   {
+      dval = _global.gauntlet_dval;
+      olditem = _root.game.hero.gauntlet;
+      itembonustxt = Math.round(itemnumber * 2) + " % extra shove distance";
+   }
+   if(armourpiece == 6)
+   {
+      dval = _global.shoulderguard_dval;
+      olditem = _root.game.hero.shoulderguard;
+      itembonustxt = Math.round(itemnumber * 2) + " % extra charge distance";
+   }
+   if(armourpiece == 7)
+   {
+      dval = _global.helmet_dval;
+      olditem = _root.game.hero.helmet;
+      itembonustxt = Math.round(itemnumber * 1.5) + " % critical hit protection";
+   }
+   if(armourpiece == 8)
+   {
+      dval = _global.shield_dval;
+      olditem = _root.game.hero.shield;
+      itembonustxt = Math.round(itemnumber * 1.5) + " % chance to deflect missile weapons";
+   }
+   itemdefence = Math.ceil(itemnumber * dval);
+   old_itemdefence = Math.ceil(olditem * dval);
+   old_itemcost = Math.round(old_itemdefence * old_itemdefence * 3);
+   trade_discount = Math.ceil(old_itemcost * (100 - _root.game.hero.charisma) / 200 / 4);
+}
+function buyarmour(whicharmour, armourpiece, itemlevel)
+{
+   goldpieces = _root.game.hero.goldpieces;
+   gotoAndStop("getitem");
+   play();
+   displayitem.setMask(armourmask);
+   displayarmour = displayitem.attachMovie(itemtype + itemnumber,itemtype + itemnumber,500);
+   displayarmour._xscale = displayarmour._yscale = 250;
+   displayarmour._rotation = 30;
+   displayarmour._y = 40;
+   displayarmour._x = -20;
+   displayarmour.blendMode = "overlay";
+   displayarmour._alpha = 30;
+   itemweighttxt = itemweight + " weight";
+   itemleveltxt = "Required gladiator level " + itemlevel;
+   itemdefencetxt = "Adds " + itemdefence + " to your armour";
+   if(olditem != 0)
+   {
+      itemcostbefore = itemcost;
+      tradein_itemname = _root[itemtype + _root.game.hero.itemtype][1];
+      bubbletext = "Would you like to buy this armour? Your final price includes trade and charisma discounts.";
+      char_discount = Math.round(itemcost * _root.game.hero.charisma / 200);
+      itemcost = itemcost - char_discount;
+      itemcost = itemcost - trade_discount;
+      if(itemcost < 1)
+      {
+         itemcost = 1;
+      }
+      if(olditem == itemnumber)
+      {
+         bubbletext = "Foolish lad. You are currently wearing this armour! You can\'t buy it again.";
+         char_discount = 0;
+         trade_discount = 0;
+         itemcost = 0;
+         itemcostbefore = 0;
+      }
+      itemcostbeforetxt = "Original armour cost: " + itemcostbefore + " gold";
+      char_discount_txt = "Charisma discount: " + char_discount + " gold";
+      trade_discount_txt = "Trade-in discount: " + Math.abs(trade_discount) + " gold";
+      itemcosttxt = "Final armour cost: " + itemcost + " gold";
+   }
+   else
+   {
+      char_discount = Math.round(itemcost * _root.game.hero.charisma / 200);
+      itemcostbefore = itemcost;
+      itemcost = itemcost - char_discount;
+      if(itemcost < 1)
+      {
+         itemcost = 1;
+      }
+      tradein_itemname = _root[itemtype + _root.game.hero.itemtype][1];
+      bubbletext = "Would you like to buy this armour? ";
+      itemcostbeforetxt = "Original armour cost: " + itemcostbefore + " gold";
+      char_discount_txt = "Charisma discount: " + char_discount + " gold";
+      trade_discount_txt = "No item to trade in";
+      itemcosttxt = "Final armour cost: " + itemcost + " gold";
+   }
+}
+if(_global.gamephase < 5)
+{
+   _root.tooltips("This is the local blacksmith. He sells armour, helmets and shields at fair prices. When the game starts, you will only be able to buy the most basic equipment.",1000,400,90);
+}
+shopkeeper.gotoAndPlay("normal");
