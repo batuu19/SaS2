@@ -11,6 +11,7 @@ namespace SaS2.Gear.Weapons
         UNDEFINED = 0,
         SLASHING = 1,
         BASING = 2,
-        RANGED = 3,
+        HACKING = 3,
+        RANGED = 4,
     }
 }

@@ -10,6 +10,6 @@ namespace SaS2.Structure
     {
         string Name { get; set; }
         int RequiredLevel { get; set; }
-        int Price { get; set; }
+        int Price { get; }
     }
 }

@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Game.cs" />
     <Compile Include="Gear\Armour\AbstractArmourItem.cs" />
+    <Compile Include="Gear\Armour\ArmourSet.cs" />
     <Compile Include="Gear\Armour\Types\Boot.cs" />
     <Compile Include="Gear\Armour\Types\Breastplate.cs" />
     <Compile Include="Gear\Armour\Types\Gauntlet.cs" />

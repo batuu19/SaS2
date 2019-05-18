@@ -11,7 +11,8 @@ namespace SaS2.Gear.Armour
     {
         public string Name { get; set; }
         public int RequiredLevel { get; set; }
-        public int Price { get; set; }
+        public int Price { get => ArmourValue * ArmourValue; set => value = 2; }//TODO
+
 
         public int SpecialChance { get; set; }
         public int ArmourValue { get; set; }
