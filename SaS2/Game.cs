@@ -112,6 +112,9 @@ namespace SaS2
         };
         List<IArmourItem> armoursTable = new List<IArmourItem>();
         Random rnd = new Random();
+        RandomCharacter randomCharacter = new RandomCharacter();
+
+        Hero hero;
         public void Init()
         {
             var setsNames = Enum.GetNames(typeof(ArmourSet));
@@ -137,12 +140,20 @@ namespace SaS2
                 }
                 i++;
             }
+
+            hero = new Hero()
+            {
+                Name = "Hero",
+                Cash = 999999,
+                Equipment = randomCharacter.GetRandomEquipment(rnd, 20, armoursTable, weaponsTable),
+                DNA = new DNA(10),
+                Level = 20,
+            };
         }
 
         public void Test()
         {
-            RandomCharacter randomCharacter = new RandomCharacter();
-            var eq = randomCharacter.GetRandomEquipment(rnd,1,armoursTable,weaponsTable);
+            var c = randomCharacter.RandomiseGladiator(rnd, hero.Level, armoursTable, weaponsTable);
         }
     }
 }

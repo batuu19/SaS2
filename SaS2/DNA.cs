@@ -29,5 +29,63 @@ namespace SaS2
             Stamina = initValue;
             Magicka = initValue;
         }
+
+        public int this[int key]
+        {
+            get
+            {
+                switch (key)
+                {
+                    case 0:
+                        return Strength;
+                    case 1:
+                        return Speed;
+                    case 2:
+                        return Attack;
+                    case 3:
+                        return Defence;
+                    case 4:
+                        return Vitality;
+                    case 5:
+                        return Charisma;
+                    case 6:
+                        return Stamina;
+                    case 7:
+                        return Magicka;
+                    default:
+                        return 0;
+                }
+            }
+            set
+            {
+                switch (key)
+                {
+                    case 0:
+                         Strength = value;
+                        break;
+                    case 1:
+                         Speed = value;
+                        break;
+                    case 2:
+                         Attack = value;
+                        break;
+                    case 3:
+                         Defence = value;
+                        break;
+                    case 4:
+                         Vitality = value;
+                        break;
+                    case 5:
+                         Charisma = value;
+                        break;
+                    case 6:
+                         Stamina = value;
+                        break;
+                    case 7:
+                         Magicka = value;
+                        break;
+                }
+            }
+        }
     }
 }

@@ -11,18 +11,30 @@ namespace SaS2
 {
     public class RandomCharacter
     {
-        public Character RandomiseGladiator(Random rnd,int level)
+        public Character RandomiseGladiator(Random rnd,int heroLevel, List<IArmourItem> armours, List<IWeaponItem> weapons)
         {
-            Character character = new Character();
-            character.Level = level;
-
-
-            throw new NotImplementedException();
+            return new Character()
+            {
+                Name = GetRandomName(rnd),
+                Level = GetRandomLevel(rnd, heroLevel),
+                DNA = GetRandomDNA(rnd, heroLevel * 3 + 6),//hero level or character level?
+                Equipment = GetRandomEquipment(rnd, heroLevel, armours, weapons),
+            };
         }
 
         public DNA GetRandomDNA(Random rnd,int statPoints)
         {
             DNA dna = new DNA(1);
+            //distribute stat points
+            while(statPoints > 0)
+            {
+                var addToStat = rnd.Next(8);
+                var pointsToTake = 1 + rnd.Next((int)Math.Round(statPoints / 3.0));
+
+                dna[addToStat] += pointsToTake;
+                statPoints -= pointsToTake;
+            }
+
 
             return dna;
         }
@@ -80,6 +92,7 @@ namespace SaS2
                 {
                     var armour = StaticHelper.GetArmour((ArmourType)type);
                     var choosenByType = armourChooseFrom.Where(x => x.GetType() == armour.GetType()).ToList();
+                    //make it not always wear all armour
                     equipment.Add(RandomHelper.GetRandomItem(rnd,choosenByType));
                 }
             }
@@ -93,6 +106,10 @@ namespace SaS2
             
 
             return equipment;
+        }
+        public string GetRandomName(Random rnd)
+        {
+            return "TestName";
         }
     }
 }
