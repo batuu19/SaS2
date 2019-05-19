@@ -53,6 +53,7 @@
     <Compile Include="Fighting\FightMode.cs" />
     <Compile Include="Fighting\MoveType.cs" />
     <Compile Include="Fighting\Warrior.cs" />
+    <Compile Include="Fighting\WarriorState.cs" />
     <Compile Include="MathHelper.cs" />
     <Compile Include="RandomCharacter.cs" />
     <Compile Include="RandomHelper.cs" />

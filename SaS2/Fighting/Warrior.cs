@@ -8,13 +8,6 @@ namespace SaS2.Fighting
 {
     public class Warrior : Character
     {
-        #region attack multipiers
-        #endregion
-
-        #region GetPercentage
-        
-        #endregion
-
         public int Hitpoints { get; private set; }
         public int Stamina { get; private set; }
         public int Armour { get; private set; }
@@ -35,9 +28,26 @@ namespace SaS2.Fighting
             Armour = MathHelper.Clamp(Armour, 0, ArmourMax);
         }
         //fight functions
-        public void DamageWarrior(Warrior attacker, DamageMethod method, int value)
+        public WarriorState DamageWarrior(Warrior attacker, DamageMethod method, int value)
         {
+            WarriorState warriorState = WarriorState.ALIVE;
+            if(Armour > 0)
+            {
+                var armourRemaining = Armour;
+                Armour -= value;
+                if (armourRemaining <= 0)
+                {
+                    value -= armourRemaining;//deal damage to armour, take all armour and next deal damage to hitpoints
+                    warriorState = WarriorState.NO_ARMOUR;
+                }
+            }
+            if(value > 0)
+            {
+                Hitpoints -= value;
+                if (Hitpoints <= 0) warriorState = WarriorState.DEAD;
+            }
             Console.WriteLine($"{attacker.Name} deals {value} damage to {Name}");
+            return warriorState;
         }
         public void RemoveArmour()
         {
@@ -97,7 +107,7 @@ namespace SaS2.Fighting
         public void Attack(AttackType type,Warrior attacker,Random rnd)
         {
             Attack attack = new Attack(type, attacker, this);
-            int damage;
+            int damage = 0;
             switch (type)
             {
                 case AttackType.POWER:
@@ -128,7 +138,13 @@ namespace SaS2.Fighting
                     //TODO
                     break;
                 default:
+                    damage = 0;
                     break;
+            }
+            var diceroll = rnd.Next(1, 100);
+            if(diceroll > 100 - attack.Percentage)
+            {
+                DamageWarrior(attacker, DamageMethod.NORMAL, damage);
             }
         }
         public void Move(MoveType type)
