@@ -30,6 +30,7 @@ namespace SaS2
                 Equipment = c.Equipment,
                 Level = c.Level,
             };
+            if (c is Hero) warrior.IsPlayer = true;
             warrior.Init();
             return warrior;
         }

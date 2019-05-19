@@ -32,7 +32,7 @@ namespace SaS2.Fighting
         public WarriorState TakeDamage(Warrior attacker, DamageMethod method, int value)
         {
             var beginValue = value;
-            Console.WriteLine($"Defender has {Armour} armour,{Hitpoints} hitpoints left");
+            Console.WriteLine($"{Name} has {Armour} armour,{Hitpoints} hitpoints left");
             WarriorState warriorState = WarriorState.ALIVE;
             if(Armour > 0)
             {
@@ -71,7 +71,7 @@ namespace SaS2.Fighting
         }
         public void MakeAction(FightAction action, Warrior other, Random rnd)
         {
-            Console.WriteLine($"action {Enum.GetName(typeof(FightActionType),action.Type)}");
+            Console.WriteLine($"{Name} is doing action {Enum.GetName(typeof(FightActionType),action.Type)}");
             switch (action.Type)
             {
                 case FightActionType.MOVE:

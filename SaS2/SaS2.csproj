@@ -43,18 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fighting\AbstractPlayer.cs" />
+    <Compile Include="Fighting\AI.cs" />
     <Compile Include="Fighting\Attack.cs" />
-    <Compile Include="Fighting\Direction.cs" />
-    <Compile Include="Fighting\FightAction.cs" />
-    <Compile Include="Fighting\FightActionType.cs" />
+    <Compile Include="Fighting\Enums\Direction.cs" />
+    <Compile Include="Fighting\Enums\FightAction.cs" />
+    <Compile Include="Fighting\Enums\FightActionType.cs" />
     <Compile Include="Fighting\Arena.cs" />
-    <Compile Include="Fighting\AttackType.cs" />
-    <Compile Include="Fighting\DamageMethod.cs" />
-    <Compile Include="Fighting\FightHelpers.cs" />
-    <Compile Include="Fighting\FightMode.cs" />
-    <Compile Include="Fighting\MoveType.cs" />
+    <Compile Include="Fighting\Enums\AttackType.cs" />
+    <Compile Include="Fighting\Enums\DamageMethod.cs" />
+    <Compile Include="Fighting\Static\FightHelpers.cs" />
+    <Compile Include="Fighting\Enums\FightMode.cs" />
+    <Compile Include="Fighting\Enums\MoveType.cs" />
+    <Compile Include="Fighting\Player.cs" />
     <Compile Include="Fighting\Warrior.cs" />
-    <Compile Include="Fighting\WarriorState.cs" />
+    <Compile Include="Fighting\Enums\WarriorState.cs" />
     <Compile Include="MathHelper.cs" />
     <Compile Include="RandomCharacter.cs" />
     <Compile Include="RandomHelper.cs" />
@@ -104,8 +107,6 @@
     <Content Include="Sources\ShopWeapons.txt" />
     <Content Include="Sources\SoundsAndTooltips.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Fighting\AI\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

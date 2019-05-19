@@ -10,5 +10,6 @@ namespace SaS2
     {
         public int Cash { get; set; }
         public int Experience { get; set; }
+        
     }
 }

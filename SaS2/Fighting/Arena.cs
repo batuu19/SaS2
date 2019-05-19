@@ -15,67 +15,71 @@ namespace SaS2.Fighting
         int crowdInteres = 0;
         FightMode fightMode;
 
+        AbstractPlayer activePlayer;
+        AbstractPlayer inactivePlayer;
+
         Random rnd;
-        public Arena(Warrior hero, Warrior villain,FightMode fightMode, Random rnd)
+
+        Player human;
+        AI computer;
+        public Arena(Hero hero, Warrior villain, FightMode fightMode, Random rnd)
         {
-            this.hero = hero;
+            this.hero = Character.CopyToWarrior(hero);
             this.villain = villain;
-            active = hero;
+            active = this.hero;
             inactive = villain;
             this.fightMode = fightMode;
             this.rnd = rnd;
+            human = new Player(hero);
+            computer = new AI(villain);
+            activePlayer = human;
+            inactivePlayer = computer;
         }
 
-        void ChangeActiveWarrior()
+        void SwapActive()
         {
             if (active == hero)
             {
                 active = villain;
                 inactive = hero;
+                activePlayer = computer;
+                inactivePlayer = human;
             }
             else
             {
                 active = hero;
                 inactive = villain;
+                activePlayer = human;
+                inactivePlayer = computer;
             }
+        }
+        public void Begin()
+        {
+            human.BeginFight();
         }
         public bool NextMove()
         {
-            FightAction action = new FightAction();
-            
-                int i = 0,choice = 0;
-                Console.WriteLine($"Choose action for {active.Name}");
-                i = 0;
-                var values = Enum.GetValues(typeof(FightActionType));
-                foreach (var v in values)
-                {
-                    Console.WriteLine($"[{i}] {Enum.GetName(typeof(FightActionType), v).ToLower().FirstToUpper()}");
-                    i++;
-                }
-                choice = int.Parse(Console.ReadLine());
-
-                var type = (FightActionType)values.GetValue(choice);
-                action.Type = type;
-                if (type == FightActionType.ATTACK)
-                {
-                    Console.WriteLine("Choose attack type");
-                    i = 0;
-                    var attacks = FightHelpers.GetAvailableAttacks(false, true, true);
-                    foreach (var a in attacks)
-                    {
-                        Console.WriteLine($"[{i}] {Enum.GetName(typeof(AttackType), a).ToLower().FirstToUpper()}({Attack.GetPercentage(a, hero, villain)}% chance)");
-                        i++;
-                    }
-                    choice = int.Parse(Console.ReadLine());
-                    action.AttackType = attacks[choice];
-                }
+            var action = activePlayer.GetFightAction(inactive);
 
             active.MakeAction(action, inactive, rnd);
 
-            if (fightMode == FightMode.CHAMPIONSHIP)
-                return hero.State != WarriorState.DEAD && villain.State != WarriorState.DEAD;
-            else
-                return hero.State == WarriorState.ALIVE && hero.State == WarriorState.ALIVE;
+            var end = (
+            (fightMode == FightMode.CHAMPIONSHIP &&
+                (hero.State == WarriorState.DEAD || villain.State == WarriorState.DEAD))
+                ||
+            (fightMode == FightMode.DUEL &&
+                (hero.State != WarriorState.ALIVE || hero.State != WarriorState.ALIVE))
+                );
+            if (!end)
+            {
+                SwapActive();
+                return true;
+            }
+            else return false;
+        }
+        public void Finish()
+        {
+            inactive.Death();
         }
     }
 }

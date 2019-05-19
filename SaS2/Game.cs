@@ -146,30 +146,22 @@ namespace SaS2
             {
                 Name = "Hero",
                 Cash = 999999,
-                Equipment = randomCharacter.GetRandomEquipment(rnd, 20, armoursTable, weaponsTable),
-                DNA = new DNA(10),
-                Level = 20,
+                Equipment = randomCharacter.GetRandomEquipment(rnd, 1, armoursTable, weaponsTable),
+                DNA = new DNA(1),
+                Level = 1,
             };
+            hero.Equipment.Weapon = (Weapon)weaponsTable[weaponsTable.Count - 1];
         }
 
         public void Test()
         {
-            Character mine = new Character()
-            {
-                Name = "HERO",
-                DNA = new DNA(30),
-                Level = 40,
-            };
-            mine.Equipment = randomCharacter.GetRandomEquipment(rnd, mine.Level, armoursTable, weaponsTable);
-            mine.Equipment.Weapon = (Weapon)weaponsTable[weaponsTable.Count - 1];
-            var other = randomCharacter.RandomiseGladiator(rnd, 16, armoursTable, weaponsTable);
-
-            var hero = Character.CopyToWarrior(mine);
-            hero.IsPlayer = true;
+            var other = randomCharacter.RandomiseGladiator(rnd, 40, armoursTable, weaponsTable);
+            
             var villain = Character.CopyToWarrior(other);
-            Arena arena = new Arena(hero, villain,FightMode.CHAMPIONSHIP, rnd);
+            Arena arena = new Arena(this.hero, villain,FightMode.CHAMPIONSHIP, rnd);
+            arena.Begin();
             while (arena.NextMove()) ;
-            Console.WriteLine("Arena end");
+            arena.Finish();
             Console.ReadLine();
         }
     }
