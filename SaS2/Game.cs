@@ -146,9 +146,9 @@ namespace SaS2
             {
                 Name = "Hero",
                 Cash = 999999,
-                Equipment = randomCharacter.GetRandomEquipment(rnd, 1, armoursTable, weaponsTable),
-                DNA = new DNA(1),
-                Level = 1,
+                Equipment = randomCharacter.GetRandomEquipment(rnd, 40, armoursTable, weaponsTable),
+                DNA = new DNA(20),
+                Level = 40,
             };
             hero.Equipment.Weapon = (Weapon)weaponsTable[weaponsTable.Count - 1];
         }

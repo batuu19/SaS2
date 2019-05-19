@@ -105,7 +105,8 @@ namespace SaS2
             var weaponChoice = (WeaponType)rnd.Next(1, 3);
             //TODO
             //var randomRanged = rnd.Next(1, 80);
-            List<IWeaponItem> weaponChooseFrom = weapons.Where(x => x.Type == weaponChoice).ToList();
+            //TODO x.MaxDamage > heroLevel fix that
+            List<IWeaponItem> weaponChooseFrom = weapons.Where(x => x.Type == weaponChoice && x.MaxDamage > heroLevel).ToList();
             equipment.Weapon = (Weapon)RandomHelper.GetRandomItem(rnd, weaponChooseFrom);
             
 
