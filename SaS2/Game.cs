@@ -162,41 +162,15 @@ namespace SaS2
             };
             mine.Equipment = randomCharacter.GetRandomEquipment(rnd, mine.Level, armoursTable, weaponsTable);
             mine.Equipment.Weapon = (Weapon)weaponsTable[weaponsTable.Count - 1];
-            var other = randomCharacter.RandomiseGladiator(rnd, mine.Level, armoursTable, weaponsTable);
+            var other = randomCharacter.RandomiseGladiator(rnd, 16, armoursTable, weaponsTable);
 
             var hero = Character.CopyToWarrior(mine);
+            hero.IsPlayer = true;
             var villain = Character.CopyToWarrior(other);
-            int i = 0;
-            FightAction action = new FightAction();
-            do
-            {
-                Console.WriteLine($"Choose action");
-                i = 0;
-                var values = Enum.GetValues(typeof(FightActionType));
-                foreach (var v in values)
-                {
-                    Console.WriteLine($"[{i}] {Enum.GetName(typeof(FightActionType), v).ToLower().FirstToUpper()}");
-                    i++;
-                }
-                int choice = int.Parse(Console.ReadLine());
-
-                var type = (FightActionType)values.GetValue(choice);
-                action.Type = type;
-                if(type == FightActionType.ATTACK)
-                {
-                    Console.WriteLine("Choose attack type");
-                    i = 0;
-                    var attacks = FightHelpers.GetAvailableAttacks(false, true, true);
-                    foreach (var a in attacks)
-                    {
-                        Console.WriteLine($"[{i}] {Enum.GetName(typeof(AttackType), a).ToLower().FirstToUpper()}({Attack.GetPercentage(a,hero,villain)}% chance)");
-                        i++;
-                    }
-                    choice = int.Parse(Console.ReadLine());
-                    action.AttackType = attacks[choice];
-                }
-
-            } while (hero.MakeAction(action, villain, rnd));
+            Arena arena = new Arena(hero, villain,FightMode.CHAMPIONSHIP, rnd);
+            while (arena.NextMove()) ;
+            Console.WriteLine("Arena end");
+            Console.ReadLine();
         }
     }
 }

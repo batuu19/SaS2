@@ -15,6 +15,7 @@ namespace SaS2.Fighting
         public int MovementSpeed => 0;//TODO
         public int Position { get; set; }
         public bool IsPlayer { get; set; }
+        public WarriorState State { get; set; } = WarriorState.ALIVE;
         public void Init()
         {
             Hitpoints = HitpointsMax;
@@ -30,23 +31,27 @@ namespace SaS2.Fighting
         //fight functions
         public WarriorState TakeDamage(Warrior attacker, DamageMethod method, int value)
         {
-            Console.WriteLine($"{attacker.Name} deals {value} damage to {Name}");
+            var beginValue = value;
+            Console.WriteLine($"Defender has {Armour} armour,{Hitpoints} hitpoints left");
             WarriorState warriorState = WarriorState.ALIVE;
             if(Armour > 0)
             {
                 var armourRemaining = Armour;
                 Armour -= value;
-                if (armourRemaining <= 0)
+                if (Armour <= 0)
                 {
                     value -= armourRemaining;//deal damage to armour, take all armour and next deal damage to hitpoints
                     warriorState = WarriorState.NO_ARMOUR;
                 }
+                else value = 0;
             }
             if(value > 0)
             {
                 Hitpoints -= value;
                 if (Hitpoints <= 0) warriorState = WarriorState.DEAD;
             }
+            Console.WriteLine($"{attacker.Name} deals {beginValue} damage to {Name} leaving {Armour} armour,{Hitpoints} hitpoints left");
+            State = warriorState;
             return warriorState;
         }
         public void RemoveArmour()
@@ -64,7 +69,7 @@ namespace SaS2.Fighting
         {
             Console.WriteLine($"{Name} Blocked attack!");
         }
-        public bool MakeAction(FightAction action, Warrior other, Random rnd)
+        public void MakeAction(FightAction action, Warrior other, Random rnd)
         {
             Console.WriteLine($"action {Enum.GetName(typeof(FightActionType),action.Type)}");
             switch (action.Type)
@@ -104,12 +109,12 @@ namespace SaS2.Fighting
                         break;
                     }
             }
-            return true;
         }
         public void Attack(AttackType type,Warrior defender,Random rnd)
         {
             Attack attack = new Attack(type, this, defender);
             int damage = 0;
+            int staminaCost = 0;
             switch (type)
             {
                 case AttackType.POWER:
@@ -149,7 +154,7 @@ namespace SaS2.Fighting
             var diceroll = rnd.Next(1, 100);
             if(diceroll > 100 - attack.Percentage)
             {
-                defender.TakeDamage(this, DamageMethod.NORMAL, damage);
+                var state = defender.TakeDamage(this, DamageMethod.NORMAL, damage);
             }
             else
             {

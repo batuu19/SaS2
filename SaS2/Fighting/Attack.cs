@@ -71,8 +71,8 @@ namespace SaS2.Fighting
         public Attack(AttackType type,Warrior attacker,Warrior defender)
         {
             Type = type;
-            MaxDamage = attacker.Equipment.Weapon.MaxDamage;
-            MinDamage = attacker.Equipment.Weapon.MinDamage;
+            MaxDamage = attacker.Equipment.Weapon.MaxDamage + 2*attacker.DNA.Strength;
+            MinDamage = attacker.Equipment.Weapon.MinDamage + 2*attacker.DNA.Strength;
             Percentage = GetPercentage(type, attacker, defender);
             //TODO critical hit
         }
