@@ -31,7 +31,7 @@ namespace SaS2.Fighting
             this.fightMode = fightMode;
             this.rnd = rnd;
             human = new Player(hero);
-            computer = new AI(villain);
+            computer = new AI(villain,rnd);
             activePlayer = human;
             inactivePlayer = computer;
         }
@@ -92,8 +92,8 @@ namespace SaS2.Fighting
             if (viewInGameStats)
             {
                 sb.AppendLine($"Stamina: {hero.Stamina}/{hero.StaminaMax} - {villain.Stamina}/{villain.StaminaMax}");
-                sb.AppendLine($"Stamina: {hero.Hitpoints}/{hero.HitpointsMax} - {villain.Hitpoints}/{villain.HitpointsMax}");
-                sb.AppendLine($"Stamina: {hero.Armour}/{hero.ArmourMax} - {villain.Armour}/{villain.ArmourMax}");
+                sb.AppendLine($"Hitpoints: {hero.Hitpoints}/{hero.HitpointsMax} - {villain.Hitpoints}/{villain.HitpointsMax}");
+                sb.AppendLine($"Armour: {hero.Armour}/{hero.ArmourMax} - {villain.Armour}/{villain.ArmourMax}");
             }
             if (viewDNAStats)
             {

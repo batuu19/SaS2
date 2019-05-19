@@ -68,11 +68,46 @@ namespace SaS2.Fighting
         }
         #endregion
 
+        public static int GetDamage(AttackType attackType, Warrior attacker, Warrior defender, Random rnd)
+        {
+            Attack attack = new Attack(attackType, attacker, defender);
+
+            switch (attackType)
+            {
+                case AttackType.POWER:
+                    return attack.MaxDamage;
+                case AttackType.NORMAL:
+                    return rnd.Next(attack.MinDamage, attack.MaxDamage);
+                case AttackType.QUICK:
+                    return attack.MinDamage;
+                case AttackType.BASH:
+                    return (int)Math.Ceiling(attack.MinDamage / 2.0);
+                case AttackType.TAUNT:
+                    return (int)Math.Round((attacker.DNA.Charisma * 2.5) - (defender.DNA.Charisma * 0.25));
+                case AttackType.BOMBARD:
+                    return rnd.Next(attack.MinDamage, attack.MaxDamage);
+                case AttackType.SNIPE:
+                    return attack.MinDamage;
+                case AttackType.GRIEVOUS:
+                    return (int)Math.Round(attack.MaxDamage * 1.5);
+                case AttackType.MAGICKA:
+                //TODO
+                case AttackType.CHARGE:
+                    return rnd.Next(attack.MinDamage, attack.MaxDamage);
+                default:
+                    return 0;
+            }
+        }
+        public static int GetStaminaCost(AttackType attackType, Warrior attacker, Warrior defender, Random rnd)
+        {
+            throw new NotImplementedException();
+        }
+
         public Attack(AttackType type,Warrior attacker,Warrior defender)
         {
             Type = type;
-            MaxDamage = attacker.Equipment.Weapon.MaxDamage + 2*attacker.DNA.Strength;
-            MinDamage = attacker.Equipment.Weapon.MinDamage + 2*attacker.DNA.Strength;
+            MaxDamage =  attacker.Equipment.Weapon.MaxDamage + 2*attacker.DNA.Strength;
+            MinDamage =  attacker.Equipment.Weapon.MinDamage + 2*attacker.DNA.Strength;
             Percentage = GetPercentage(type, attacker, defender);
             //TODO critical hit
         }

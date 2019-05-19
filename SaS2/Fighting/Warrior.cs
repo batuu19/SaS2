@@ -81,7 +81,7 @@ namespace SaS2.Fighting
                     }
                 case FightActionType.ATTACK:
                     {
-                        Attack(action.AttackType,other,rnd);
+                        AttackWarrior(action.AttackType,other,rnd);
                         break;
                     }
                 case FightActionType.WINCROWD:
@@ -110,47 +110,12 @@ namespace SaS2.Fighting
                     }
             }
         }
-        public void Attack(AttackType type,Warrior defender,Random rnd)
+        public void AttackWarrior(AttackType type,Warrior defender,Random rnd)
         {
+            Console.WriteLine($"{Name} attacks {defender.Name} with {Enum.GetName(typeof(AttackType),type)} attack");
             Attack attack = new Attack(type, this, defender);
             int damage = 0;
-            int staminaCost = 0;
-            switch (type)
-            {
-                case AttackType.POWER:
-                    damage = attack.MaxDamage;
-                    break;
-                case AttackType.NORMAL:
-                    damage = rnd.Next(attack.MinDamage, attack.MaxDamage);
-                    break;
-                case AttackType.QUICK:
-                    damage = attack.MinDamage;
-                    break;
-                case AttackType.BASH:
-                    damage = (int)Math.Ceiling(attack.MinDamage / 2.0);
-                    break;
-                case AttackType.TAUNT:
-                    damage = (int)Math.Round((this.DNA.Charisma * 2.5) - (defender.DNA.Charisma * 0.25));
-                    break;
-                case AttackType.BOMBARD:
-                    damage = rnd.Next(attack.MinDamage, attack.MaxDamage);
-                    break;
-                case AttackType.SNIPE:
-                    damage = attack.MinDamage;
-                    break;
-                case AttackType.GRIEVOUS:
-                    damage = (int)Math.Round(attack.MaxDamage * 1.5);
-                    break;
-                case AttackType.MAGICKA:
-                    //TODO
-                    break;
-                case AttackType.CHARGE:
-                    damage = rnd.Next(attack.MinDamage, attack.MaxDamage);
-                    break;
-                default:
-                    damage = 0;
-                    break;
-            }
+            damage = Attack.GetDamage(type,this,defender,rnd);
             var diceroll = rnd.Next(1, 100);
             if(diceroll > 100 - attack.Percentage)
             {

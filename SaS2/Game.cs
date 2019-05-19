@@ -156,7 +156,7 @@ namespace SaS2
         public void Test()
         {
             var other = randomCharacter.RandomiseGladiator(rnd, 40, armoursTable, weaponsTable);
-            
+            //other.Equipment.Weapon = (Weapon)weaponsTable[0];
             var villain = Character.CopyToWarrior(other);
             Arena arena = new Arena(this.hero, villain,FightMode.CHAMPIONSHIP, rnd);
             arena.Begin();
