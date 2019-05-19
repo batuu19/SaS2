@@ -9,6 +9,8 @@ namespace SaS2.Fighting
     public class FightAction
     {
         public FightActionType Type { get; set; }
+        public AttackType AttackType { get; set; }
+        public MoveType MoveType { get; set; }
 
     }
 }

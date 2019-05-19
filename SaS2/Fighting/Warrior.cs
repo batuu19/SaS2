@@ -99,24 +99,18 @@ namespace SaS2.Fighting
         {
             Console.WriteLine("Blocked!");
         }
-        public void MakeAction(FightActionType action, Warrior attacker, Random rnd)
+        public void MakeAction(FightAction action, Warrior attacker, Random rnd)
         {
-            int damage;
-            int criticalHit;
-            int diceroll = rnd.Next(1, 100);
-            int rollneeded;
-            switch (action)
+            switch (action.Type)
             {
                 case FightActionType.MOVE:
                     {
-
+                        Move(action.MoveType);
                         break;
                     }
                 case FightActionType.ATTACK:
                     {
-                        damage = MinDamage;
-                        criticalHit = rnd.Next(-20, 20);
-                        //rollneeded = 100 - GetQuickPercentage();
+                        Attack(action.AttackType,attacker,rnd);
                         break;
                     }
                 case FightActionType.WINCROWD:
@@ -145,11 +139,14 @@ namespace SaS2.Fighting
                     }
             }
         }
-        public void Attack(ActionAttack action,Warrior attacker,Random rnd)
+        public void Attack(AttackType type,Warrior attacker,Random rnd)
         {
-
+            int damage;
+            int criticalHit;
+            int diceroll = rnd.Next(1, 100);
+            int rollneeded;
         }
-        public void Move(ActionMove action)
+        public void Move(MoveType type)
         {
 
         }
