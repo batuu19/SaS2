@@ -26,7 +26,7 @@ namespace SaS2.Fighting
 
         private int GetPercentage(int stat1, int stat2, double mul)
         {
-            var p = (int)Math.Round((stat1 + 9) / (stat2 + 9) * 100 * mul);
+            var p = (int)Math.Round((double)(stat1 + 9) / (stat2 + 9) * 100 * mul);
             return MathHelper.ClampPercentage(p);
         }
         public int GetChargePercentage  (Warrior attacker, Warrior defender) => GetPercentage(attacker.DNA.Attack, defender.DNA.Defence, powerMul);
