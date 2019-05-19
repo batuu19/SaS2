@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaS2.Fighting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,18 @@ namespace SaS2
         public int ArmourMax => Equipment.ArmourItems.Sum(x => x.ArmourValue);
         public int MinDamage => Equipment.Weapon.MinDamage;
         public int MaxDamage => Equipment.Weapon.MaxDamage;
+
+        public static Warrior CopyToWarrior(Character c)
+        {
+            Warrior warrior = new Warrior()
+            {
+                Name = c.Name,
+                DNA = c.DNA,
+                Equipment = c.Equipment,
+                Level = c.Level,
+            };
+            warrior.Init();
+            return warrior;
+        }
     }
 }

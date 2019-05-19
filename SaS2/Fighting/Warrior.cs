@@ -60,7 +60,7 @@ namespace SaS2.Fighting
             Console.Read();
             //TODO: get out of arena
         }
-        public void Blocked()
+        public void BlockDamage(DamageMethod method)
         {
             Console.WriteLine("Blocked!");
         }
@@ -145,6 +145,10 @@ namespace SaS2.Fighting
             if(diceroll > 100 - attack.Percentage)
             {
                 DamageWarrior(attacker, DamageMethod.NORMAL, damage);
+            }
+            else
+            {
+                BlockDamage(DamageMethod.NORMAL);
             }
         }
         public void Move(MoveType type)
