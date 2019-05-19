@@ -59,5 +59,101 @@ namespace SaS2.Fighting
             }
         }
         #endregion
+
+        public int Hitpoints { get; private set; }
+        public int Stamina { get; private set; }
+        public int Armour { get; private set; }
+        public Direction FacingDirection { get; set; }
+        public int MovementSpeed => 0;//TODO
+        public int Position { get; set; }
+        public bool IsPlayer { get; set; }
+        public void Init()
+        {
+            Hitpoints = HitpointsMax;
+            Stamina = StaminaMax;
+            Armour = ArmourMax;
+        }
+        public void CheckStats()
+        {
+            Hitpoints = MathHelper.Clamp(Hitpoints, 0, HitpointsMax);
+            Stamina = MathHelper.Clamp(Stamina, 0, StaminaMax);
+            Armour = MathHelper.Clamp(Armour, 0, ArmourMax);
+        }
+        //fight functions
+        public void DamageWarrior(Warrior attacker, DamageMethod method, int value)
+        {
+            Console.WriteLine($"{attacker.Name} deals {value} damage to {Name}");
+        }
+        public void RemoveArmour()
+        {
+            throw new NotImplementedException();
+        }
+        public void Death()
+        {
+            if (IsPlayer) Console.WriteLine("You lost");
+            else Console.WriteLine("You won");
+            Console.Read();
+            //TODO: get out of arena
+        }
+        public void Blocked()
+        {
+            Console.WriteLine("Blocked!");
+        }
+        public void MakeAction(FightActionType action, Warrior attacker, Random rnd)
+        {
+            int damage;
+            int criticalHit;
+            int diceroll = rnd.Next(1, 100);
+            int rollneeded;
+            switch (action)
+            {
+                case FightActionType.MOVE:
+                    {
+
+                        break;
+                    }
+                case FightActionType.ATTACK:
+                    {
+                        damage = MinDamage;
+                        criticalHit = rnd.Next(-20, 20);
+                        //rollneeded = 100 - GetQuickPercentage();
+                        break;
+                    }
+                case FightActionType.WINCROWD:
+                    {
+                        break;
+                    }
+                case FightActionType.REST:
+                    {
+                        break;
+                    }
+                case FightActionType.SWAP:
+                    {
+                        break;
+                    }
+                case FightActionType.PSYCHE_UP:
+                    {
+                        break;
+                    }
+                case FightActionType.CAST_SPELL:
+                    {
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+        }
+        public void Attack(ActionAttack action,Warrior attacker,Random rnd)
+        {
+
+        }
+        public void Move(ActionMove action)
+        {
+
+        }
     }
+
+
 }

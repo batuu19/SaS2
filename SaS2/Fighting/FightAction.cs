@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace SaS2.Fighting
 {
-    public class Arena
+    public class FightAction
     {
-        Warrior hero;
-        Warrior villain;
-        int crowdAction = 0;
+        public FightActionType Type { get; set; }
+
     }
 }
