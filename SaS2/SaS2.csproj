@@ -50,6 +50,7 @@
     <Compile Include="Fighting\Arena.cs" />
     <Compile Include="Fighting\AttackType.cs" />
     <Compile Include="Fighting\DamageMethod.cs" />
+    <Compile Include="Fighting\FightHelpers.cs" />
     <Compile Include="Fighting\FightMode.cs" />
     <Compile Include="Fighting\MoveType.cs" />
     <Compile Include="Fighting\Warrior.cs" />

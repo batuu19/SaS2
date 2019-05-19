@@ -10,13 +10,9 @@ namespace SaS2
     {
         static void Main(string[] args)
         {
-            //Game game = new Game();
-            //game.Init();
-            //game.Test();
-
-            int a = 5, b = 0;
-            Console.WriteLine(MathHelper.ClampPercentage(10000));
-            Console.Read();
+            Game game = new Game();
+            game.Init();
+            game.Test();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SaS2.Gear.Armour;
+﻿using SaS2.Fighting;
+using SaS2.Gear.Armour;
 using SaS2.Gear.Weapons;
 using SaS2.Structure;
 using System;
@@ -133,7 +134,7 @@ namespace SaS2
 
                         armour.Name = string.Format("{0} {1}", setName, Enum.GetName(typeof(ArmourType), type).ToLower());
                         //TODO: fix autogenerate armour levels
-                        armour.RequiredLevel = i/3 == 0?1:i/3*6;//1,1,1,6,6,6,12,12,12...
+                        armour.RequiredLevel = i / 3 == 0 ? 1 : i / 3 * 6;//1,1,1,6,6,6,12,12,12...
                         armour.ArmourValue = StaticHelper.GetArmourValue((ArmourType)type) * (i + 2);
                         armoursTable.Add(armour);
                     }
@@ -153,7 +154,49 @@ namespace SaS2
 
         public void Test()
         {
-            var c = randomCharacter.RandomiseGladiator(rnd, hero.Level, armoursTable, weaponsTable);
+            Character mine = new Character()
+            {
+                Name = "HERO",
+                DNA = new DNA(30),
+                Level = 40,
+            };
+            mine.Equipment = randomCharacter.GetRandomEquipment(rnd, mine.Level, armoursTable, weaponsTable);
+            //mine.Equipment.Weapon = (Weapon)weaponsTable[weaponsTable.Count - 1];
+            var other = randomCharacter.RandomiseGladiator(rnd, mine.Level, armoursTable, weaponsTable);
+
+            var hero = Character.CopyToWarrior(mine);
+            var villain = Character.CopyToWarrior(other);
+            int i = 0;
+            FightAction action = new FightAction();
+            do
+            {
+                Console.WriteLine($"Choose action");
+                i = 0;
+                var values = Enum.GetValues(typeof(FightActionType));
+                foreach (var v in values)
+                {
+                    Console.WriteLine($"[{i}] {Enum.GetName(typeof(FightActionType), v).ToLower().FirstToUpper()}");
+                    i++;
+                }
+                int choice = int.Parse(Console.ReadLine());
+
+                var type = (FightActionType)values.GetValue(choice);
+                action.Type = type;
+                if(type == FightActionType.ATTACK)
+                {
+                    Console.WriteLine("Choose attack type");
+                    i = 0;
+                    var attacks = Enum.GetValues(typeof(AttackType));
+                    foreach (var a in FightHelpers.GetAvailableAttacks(false, true, true))
+                    {
+                        Console.WriteLine($"[{i}] {Enum.GetName(typeof(AttackType), a).ToLower().FirstToUpper()}");
+                        i++;
+                    }
+                    choice = int.Parse(Console.ReadLine());
+                    action.AttackType = (AttackType)attacks.GetValue(i);
+                }
+
+            } while (hero.MakeAction(action, villain, rnd));
         }
     }
 }

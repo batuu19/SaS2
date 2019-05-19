@@ -29,6 +29,7 @@ namespace SaS2.Fighting
             var p = (int)Math.Round((stat1 + 9) / (stat2 + 9) * 100 * mul);
             return MathHelper.ClampPercentage(p);
         }
+        public int GetChargePercentage  (Warrior attacker, Warrior defender) => GetPercentage(attacker.DNA.Attack, defender.DNA.Defence, powerMul);
         public int GetPowerPercentage   (Warrior attacker,Warrior defender) => GetPercentage(attacker.DNA.Attack, defender.DNA.Defence, powerMul);
         public int GetNormalPercentage  (Warrior attacker,Warrior defender) => GetPercentage(attacker.DNA.Attack, defender.DNA.Defence, normalMul);
         public int GetQuickPercentage   (Warrior attacker,Warrior defender) => GetPercentage(attacker.DNA.Attack, defender.DNA.Defence, quickMul);
@@ -41,22 +42,26 @@ namespace SaS2.Fighting
         {
             switch (attackType)
             {
+                case AttackType.CHARGE:
+                    return GetChargePercentage(attacker, defender);
                 case AttackType.POWER:
-                    return GetPowerPercentage(attacker,defender);
+                    return GetPowerPercentage(attacker, defender);
                 case AttackType.NORMAL:
-                    return GetNormalPercentage(attacker,defender);
+                    return GetNormalPercentage(attacker, defender);
                 case AttackType.QUICK:
-                    return GetQuickPercentage(attacker,defender);
+                    return GetQuickPercentage(attacker, defender);
                 case AttackType.BASH:
-                    return GetBashPercentage(attacker,defender);
+                    return GetBashPercentage(attacker, defender);
                 case AttackType.TAUNT:
-                    return GetTauntPercentage(attacker,defender);
+                    return GetTauntPercentage(attacker, defender);
                 case AttackType.BOMBARD:
-                    return GetBombardPercentage(attacker,defender);
+                    return GetBombardPercentage(attacker, defender);
                 case AttackType.SNIPE:
-                    return GetSnipePercentage(attacker,defender);
+                    return GetSnipePercentage(attacker, defender);
                 case AttackType.MAGICKA:
-                    return GetMagickaPercentage(attacker,defender);
+                    return GetMagickaPercentage(attacker, defender);
+                case AttackType.GRIEVOUS:
+                    return 100;//TODO: check how much percentage
                 default:
                     return 0;
             }

@@ -64,8 +64,9 @@ namespace SaS2.Fighting
         {
             Console.WriteLine("Blocked!");
         }
-        public void MakeAction(FightAction action, Warrior attacker, Random rnd)
+        public bool MakeAction(FightAction action, Warrior attacker, Random rnd)
         {
+            Console.WriteLine($"action {Enum.GetName(typeof(FightActionType),action.Type)}");
             switch (action.Type)
             {
                 case FightActionType.MOVE:
@@ -103,6 +104,7 @@ namespace SaS2.Fighting
                         break;
                     }
             }
+            return true;
         }
         public void Attack(AttackType type,Warrior attacker,Random rnd)
         {
@@ -136,6 +138,9 @@ namespace SaS2.Fighting
                     break;
                 case AttackType.MAGICKA:
                     //TODO
+                    break;
+                case AttackType.CHARGE:
+                    damage = rnd.Next(attack.MinDamage, attack.MaxDamage);
                     break;
                 default:
                     damage = 0;

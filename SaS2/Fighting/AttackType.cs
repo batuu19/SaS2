@@ -8,6 +8,7 @@ namespace SaS2.Fighting
 {
     public enum AttackType
     {
+        CHARGE,
         POWER,
         NORMAL,
         QUICK,
