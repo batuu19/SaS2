@@ -15,6 +15,7 @@ namespace SaS2.Fighting
         TAUNT,
         BOMBARD,
         SNIPE,
+        GRIEVOUS,
         MAGICKA,
     }
 }

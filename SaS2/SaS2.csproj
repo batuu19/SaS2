@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fighting\Attack.cs" />
     <Compile Include="Fighting\Direction.cs" />
     <Compile Include="Fighting\FightAction.cs" />
     <Compile Include="Fighting\FightActionType.cs" />
