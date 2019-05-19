@@ -28,8 +28,9 @@ namespace SaS2.Fighting
             Armour = MathHelper.Clamp(Armour, 0, ArmourMax);
         }
         //fight functions
-        public WarriorState DamageWarrior(Warrior attacker, DamageMethod method, int value)
+        public WarriorState TakeDamage(Warrior attacker, DamageMethod method, int value)
         {
+            Console.WriteLine($"{attacker.Name} deals {value} damage to {Name}");
             WarriorState warriorState = WarriorState.ALIVE;
             if(Armour > 0)
             {
@@ -46,7 +47,6 @@ namespace SaS2.Fighting
                 Hitpoints -= value;
                 if (Hitpoints <= 0) warriorState = WarriorState.DEAD;
             }
-            Console.WriteLine($"{attacker.Name} deals {value} damage to {Name}");
             return warriorState;
         }
         public void RemoveArmour()
@@ -62,9 +62,9 @@ namespace SaS2.Fighting
         }
         public void BlockDamage(DamageMethod method)
         {
-            Console.WriteLine("Blocked!");
+            Console.WriteLine($"{Name} Blocked attack!");
         }
-        public bool MakeAction(FightAction action, Warrior attacker, Random rnd)
+        public bool MakeAction(FightAction action, Warrior other, Random rnd)
         {
             Console.WriteLine($"action {Enum.GetName(typeof(FightActionType),action.Type)}");
             switch (action.Type)
@@ -76,7 +76,7 @@ namespace SaS2.Fighting
                     }
                 case FightActionType.ATTACK:
                     {
-                        Attack(action.AttackType,attacker,rnd);
+                        Attack(action.AttackType,other,rnd);
                         break;
                     }
                 case FightActionType.WINCROWD:
@@ -106,9 +106,9 @@ namespace SaS2.Fighting
             }
             return true;
         }
-        public void Attack(AttackType type,Warrior attacker,Random rnd)
+        public void Attack(AttackType type,Warrior defender,Random rnd)
         {
-            Attack attack = new Attack(type, attacker, this);
+            Attack attack = new Attack(type, this, defender);
             int damage = 0;
             switch (type)
             {
@@ -125,7 +125,7 @@ namespace SaS2.Fighting
                     damage = (int)Math.Ceiling(attack.MinDamage / 2.0);
                     break;
                 case AttackType.TAUNT:
-                    damage = (int)Math.Round((attacker.DNA.Charisma * 2.5) - (this.DNA.Charisma * 0.25));
+                    damage = (int)Math.Round((this.DNA.Charisma * 2.5) - (defender.DNA.Charisma * 0.25));
                     break;
                 case AttackType.BOMBARD:
                     damage = rnd.Next(attack.MinDamage, attack.MaxDamage);
@@ -149,11 +149,11 @@ namespace SaS2.Fighting
             var diceroll = rnd.Next(1, 100);
             if(diceroll > 100 - attack.Percentage)
             {
-                DamageWarrior(attacker, DamageMethod.NORMAL, damage);
+                defender.TakeDamage(this, DamageMethod.NORMAL, damage);
             }
             else
             {
-                BlockDamage(DamageMethod.NORMAL);
+                defender.BlockDamage(DamageMethod.NORMAL);
             }
         }
         public void Move(MoveType type)

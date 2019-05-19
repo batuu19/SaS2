@@ -161,7 +161,7 @@ namespace SaS2
                 Level = 40,
             };
             mine.Equipment = randomCharacter.GetRandomEquipment(rnd, mine.Level, armoursTable, weaponsTable);
-            //mine.Equipment.Weapon = (Weapon)weaponsTable[weaponsTable.Count - 1];
+            mine.Equipment.Weapon = (Weapon)weaponsTable[weaponsTable.Count - 1];
             var other = randomCharacter.RandomiseGladiator(rnd, mine.Level, armoursTable, weaponsTable);
 
             var hero = Character.CopyToWarrior(mine);
@@ -186,14 +186,14 @@ namespace SaS2
                 {
                     Console.WriteLine("Choose attack type");
                     i = 0;
-                    var attacks = Enum.GetValues(typeof(AttackType));
-                    foreach (var a in FightHelpers.GetAvailableAttacks(false, true, true))
+                    var attacks = FightHelpers.GetAvailableAttacks(false, true, true);
+                    foreach (var a in attacks)
                     {
-                        Console.WriteLine($"[{i}] {Enum.GetName(typeof(AttackType), a).ToLower().FirstToUpper()}");
+                        Console.WriteLine($"[{i}] {Enum.GetName(typeof(AttackType), a).ToLower().FirstToUpper()}({Attack.GetPercentage(a,hero,villain)}% chance)");
                         i++;
                     }
                     choice = int.Parse(Console.ReadLine());
-                    action.AttackType = (AttackType)attacks.GetValue(i);
+                    action.AttackType = attacks[choice];
                 }
 
             } while (hero.MakeAction(action, villain, rnd));
