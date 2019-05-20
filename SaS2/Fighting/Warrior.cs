@@ -32,7 +32,6 @@ namespace SaS2.Fighting
         public WarriorState TakeDamage(Warrior attacker, DamageMethod method, int value)
         {
             var beginValue = value;
-            Console.WriteLine($"{Name} has {Armour} armour,{Hitpoints} hitpoints left");
             WarriorState warriorState = WarriorState.ALIVE;
             if(Armour > 0)
             {
