@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace SaS2
 {
-    class Program
+    public enum GameLocation
     {
-        static void Main(string[] args)
-        {
-            Game game = new Game();
-            game.Start();
-        }
+        MAIN,
+        ARENA,
+        FIGHTING,
+        ARMOURY,
+        BLACKSMITH,
+        MAGICSHOP,
+        CHURCH,
     }
 }

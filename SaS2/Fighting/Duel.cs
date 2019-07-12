@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace SaS2.Fighting
 {
-    public class Arena
+    public class Duel : IContinuable
     {
         readonly Warrior hero;
         readonly Warrior villain;
         Warrior active;
         Warrior inactive;
-        int crowdInteres = 0;
+        int crowdInterest = 0;
         FightMode fightMode;
 
         AbstractPlayer activePlayer;
@@ -22,7 +22,7 @@ namespace SaS2.Fighting
 
         Player human;
         AI computer;
-        public Arena(Hero hero, Warrior villain, FightMode fightMode, Random rnd)
+        public Duel(Hero hero, Warrior villain, FightMode fightMode, Random rnd)
         {
             this.hero = Character.CopyToWarrior(hero);
             this.villain = villain;
@@ -65,7 +65,7 @@ namespace SaS2.Fighting
             active.MakeAction(action, inactive, rnd);
 
             var end = (
-            (fightMode == FightMode.CHAMPIONSHIP &&
+            (fightMode == FightMode.TOURNAMENT &&
                 (hero.State == WarriorState.DEAD || villain.State == WarriorState.DEAD))
                 ||
             (fightMode == FightMode.DUEL &&

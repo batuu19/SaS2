@@ -1,4 +1,5 @@
 ﻿using SaS2.Fighting;
+using SaS2.Fighting.Tournament;
 using SaS2.Gear.Armour;
 using SaS2.Gear.Weapons;
 using SaS2.Structure;
@@ -12,6 +13,8 @@ namespace SaS2
 {
     public class Game
     {
+        //TODO load all these from file
+
         //    List<string> armourweights = new List<string> { "", "Light", "Medium", "Heavy" };
         //    List<string> armourconditions = new List<string> { "", "Broken", "Badly Damaged", "Damaged", "Slightly Damaged ", "Perfect" };
         //    List<string> armourtypes = new List<string> { "", "boot", "shinguard", "greaves", "breastplate", "gauntlet", "shoulderguard", "helmet", "shield" };
@@ -112,10 +115,19 @@ namespace SaS2
             new Weapon(1,"Blade of the Empire",3,200,800,4),
         };
         List<IArmourItem> armoursTable = new List<IArmourItem>();
+        
         Random rnd = new Random();
         RandomCharacter randomCharacter = new RandomCharacter();
 
         Hero hero;
+        GameLocation currLocation = GameLocation.MAIN;//current location
+        List<TournamentInfo> tournaments;
+        TournamentInfo nextTournament;
+        public void Start()
+        {
+            Init();
+            while (Play()) ;
+        }
         public void Init()
         {
             var setsNames = Enum.GetNames(typeof(ArmourSet));
@@ -152,17 +164,97 @@ namespace SaS2
             };
             hero.Equipment.Weapon = (Weapon)weaponsTable[weaponsTable.Count - 1];
         }
+        public bool Play()
+        {
+            Console.WriteLine("Choose location to go");
+            switch (currLocation)
+            {
+                case GameLocation.MAIN:
+                    {
+                        var locList = Enum.GetNames(typeof(GameLocation)).ToList();
+                        locList.Remove(Enum.GetName(typeof(GameLocation), GameLocation.MAIN));
+
+                        for (int i = 0; i < locList.Count; i++)
+                        {
+                            Console.WriteLine($"[{i}] {locList[i]}");
+                        }
+
+                        int choice = int.Parse(Console.ReadLine());
+                        GameLocation gameLocation = (GameLocation)choice;
+                        return true;
+                    }
+                case GameLocation.ARENA:
+                    {
+                        var fightTypes = Enum.GetNames(typeof(FightMode));
+                        for (int i = 0; i < fightTypes.Length; i++)
+                        {
+                            Console.WriteLine($"[{i}] {fightTypes[i]}");
+                        }
+
+                        int choice = int.Parse(Console.ReadLine());
+                        FightMode fightMode = (FightMode)choice;
+                        GoFight(fightMode);
+                    }
+                    break;
+                case GameLocation.FIGHTING:
+                    break;
+                case GameLocation.ARMOURY:
+                    break;
+                case GameLocation.BLACKSMITH:
+                    break;
+                case GameLocation.MAGICSHOP:
+                    break;
+                case GameLocation.CHURCH:
+                    break;
+                default:
+                    break;
+            }
+            return true;
+
+        }
+
+        private void GoFight(FightMode fightMode)
+        {
+            switch (fightMode)
+            {
+                case FightMode.DUEL:
+                    {
+                        var other = randomCharacter.RandomiseGladiator(rnd, 40, armoursTable, weaponsTable);
+                        var villain = Character.CopyToWarrior(other);
+                        Duel duel = new Duel(this.hero, villain, FightMode.TOURNAMENT, rnd);
+                        duel.Begin();
+                        while (duel.NextMove()) ;
+                        duel.Finish();
+                        break;
+                    }
+                case FightMode.TOURNAMENT:
+                    {
+                        Tournament tournament = new Tournament()
+                        {
+                            Info = nextTournament
+                        };
+                        tournament.Begin();
+                        while (tournament.NextMove()) ;
+                        tournament.Finish();
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
 
         public void Test()
         {
             var other = randomCharacter.RandomiseGladiator(rnd, 40, armoursTable, weaponsTable);
             //other.Equipment.Weapon = (Weapon)weaponsTable[0];
             var villain = Character.CopyToWarrior(other);
-            Arena arena = new Arena(this.hero, villain,FightMode.CHAMPIONSHIP, rnd);
-            arena.Begin();
-            while (arena.NextMove()) ;
-            arena.Finish();
+            Duel duel = new Duel(this.hero, villain, FightMode.TOURNAMENT, rnd);
+            duel.Begin();
+            while (duel.NextMove()) ;
+            duel.Finish();
             Console.ReadLine();
         }
+
+
     }
 }

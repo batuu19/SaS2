@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SaS2.Fighting
+namespace SaS2.Fighting.Tournament
 {
-    public enum FightMode
+    public class Boss : Warrior
     {
-        DUEL,
-        TOURNAMENT,
+
     }
 }

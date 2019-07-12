@@ -21,6 +21,19 @@ namespace SaS2
         public int MinDamage => Equipment.Weapon.MinDamage;
         public int MaxDamage => Equipment.Weapon.MaxDamage;
 
+        //public Character Test(string initString)
+        //{
+        //    //_root.game.champion.charDNA = 
+        //    //"John the Butcher,
+        //    //1,13,1,40,3,1,1,1,102,2,4,1,24,0,0,6,3,1,3,3,2,5,1,5,0,125,1,0,2500,1,0,1,4,6,1,0,0,0,0,1,0,1,0,0,0,0,0,5,1";
+        //    //1,13,1,40,3,1,1,1,102,2,4,1,24,0,0,DNA             LEVEL,5,0,125,1,0,2500,1,0,1,4,6,1,0,0,0,0,1,0,1,0,0,0,0,0,5,1";
+        //    //       hair,facehair?
+        //    //102 - helmet
+        //    //24-weapon
+
+
+        //}
+
         public static Warrior CopyToWarrior(Character c)
         {
             Warrior warrior = new Warrior()

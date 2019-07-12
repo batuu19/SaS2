@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SaS2.Fighting
+namespace SaS2
 {
-    public enum FightMode
+    public interface IContinuable
     {
-        DUEL,
-        TOURNAMENT,
+        void Begin();
+        bool NextMove();
+        void Finish();
     }
 }
